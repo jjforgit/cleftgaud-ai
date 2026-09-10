@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CleftGuard AI — Clinical Dental Radiograph AI Triage</title>
+  <meta name="description" content="Production-grade AI triage and computer vision assessment for pediatric alveolar cleft bone graft radiographs." />
+  
+  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header Navigation -->
+    <header class="header-bar">
+      <div class="brand-section">
+        <div class="brand-icon">🦷</div>
+        <div class="brand-titles">
+          <h1>CleftGuard AI <span class="badge-tag">v1.0.4</span></h1>
+          <p>Clinical Dental Radiograph AI Triage & Alveolar Bone Graft Evaluation</p>
+        </div>
+      </div>
+      
+      <div class="system-status-pills">
+        <div class="status-pill online">
+          <span class="pulse-dot"></span>
+          <span>GPU Acceleration: Simulated (2.5s)</span>
+        </div>
+        <div class="status-pill">
+          <span>🛡️ HIPAA 164.312(b) Audit Active</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Metrics Telemetry Ribbon -->
+    <section class="metrics-ribbon" id="metricsRibbon">
+      <div class="metric-card">
+        <div class="metric-icon">📊</div>
+        <div class="metric-info">
+          <span class="metric-label">Scans Processed Today</span>
+          <span class="metric-value" id="metricScans">42</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">⚡</div>
+        <div class="metric-info">
+          <span class="metric-label">Avg Inference Latency</span>
+          <span class="metric-value" id="metricLatency">2.40s</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">🚨</div>
+        <div class="metric-info">
+          <span class="metric-label">Urgent Referrals</span>
+          <span class="metric-value" id="metricUrgent">3</span>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon">⏱️</div>
+        <div class="metric-info">
+          <span class="metric-label">System Uptime</span>
+          <span class="metric-value" id="metricUptime">99.98%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Workspace Grid -->
+    <main class="main-grid">
+      
+      <!-- Left Sidebar: Ingestion, Presets, Metadata -->
+      <aside class="sidebar-panel">
+        
+        <!-- Clinical Ingestion Card -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h2 class="card-title">📁 Radiograph Ingestion</h2>
+            <span class="badge-tag">MIME: JPG/PNG</span>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="preset-section">
+            <div class="section-label">⚡ 1-Click Clinical Sample Presets:</div>
+            <div class="preset-buttons">
+              <button type="button" class="preset-btn" id="btnPresetHealthy" onclick="loadSamplePreset('healthy')">
+                <span class="preset-title">🟢 Sample A</span>
+                <span class="preset-desc">Healthy Bone Graft (Stable Consolidation)</span>
+              </button>
+              <button type="button" class="preset-btn" id="btnPresetDefect" onclick="loadSamplePreset('defect')">
+                <span class="preset-title">🔴 Sample B</span>
+                <span class="preset-desc">Cleft Resorption Defect (Review Needed)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Zone -->
+          <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+            <div class="dropzone-icon">📷</div>
+            <div class="dropzone-text">Drop dental radiograph here</div>
+            <div class="dropzone-hint">or click to browse from your device</div>
+            <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+          </div>
+
+          <!-- Selected File Strip -->
+          <div class="file-preview-strip" id="filePreviewStrip">
+            <div class="file-info">
+              <span>🩻</span>
+              <span id="fileNameDisplay">radiograph.png</span>
+            </div>
+            <button type="button" class="file-remove-btn" onclick="clearSelectedFile()" title="Remove file">✕</button>
+          </div>
+
+          <!-- Patient & Metadata Form -->
+          <div class="form-group">
+            <label class="form-label" for="patientIdInput">Patient / MRN Identifier</label>
+            <input type="text" id="patientIdInput" class="form-input" value="PT-884920" placeholder="e.g. PT-10492" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="notesInput">Clinical Indication</label>
+            <input type="text" id="notesInput" class="form-input" value="Pediatric alveolar cleft 6-mo post-bone graft" placeholder="Clinical notes / evaluation reason" />
+          </div>
+
+          <!-- Run Triage Button -->
+          <button type="button" class="btn-primary" id="btnAnalyze" onclick="runAnalysis()" disabled>
+            <span>⚡ Run Clinical AI Triage</span>
+          </button>
+        </div>
+
+        <!-- HIPAA Compliance Notice Card -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3 class="card-title">🛡️ Security & Privacy</h3>
+            <span class="badge-tag">45 CFR § 164.312</span>
+          </div>
+          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">
+            Every radiograph analysis is hashed using <strong>SHA-256</strong> and logged to an immutable compliance audit trail before GPU computer-vision inference.
+          </p>
+        </div>
+
+      </aside>
+
+      <!-- Right Main Panel: Visualizer & Diagnostic XAI -->
+      <section class="workspace-panel">
+        
+        <!-- Live AI Multi-Stage Pipeline Tracker -->
+        <div class="pipeline-card" id="pipelineCard">
+          <div class="pipeline-header">
+            <span class="pipeline-title">⚡ Deep Learning GPU Inference Engine Active</span>
+            <span class="pipeline-timer" id="pipelineTimer">0.0s / 2.5s</span>
+          </div>
+          
+          <div class="pipeline-progress-bar-bg">
+            <div class="pipeline-progress-bar" id="pipelineProgressBar"></div>
+          </div>
+          
+          <div class="pipeline-stages">
+            <div class="stage-item" id="stage1">
+              <div class="stage-dot">1</div>
+              <div class="stage-label">SHA-256 Cryptographic Hash</div>
+            </div>
+            <div class="stage-item" id="stage2">
+              <div class="stage-dot">2</div>
+              <div class="stage-label">Alveolar ROI Segmentation</div>
+            </div>
+            <div class="stage-item" id="stage3">
+              <div class="stage-dot">3</div>
+              <div class="stage-label">Bone Density (BMD) Index</div>
+            </div>
+            <div class="stage-item" id="stage4">
+              <div class="stage-dot">4</div>
+              <div class="stage-label">Canny Contour Defect Localizer</div>
+            </div>
+            <div class="stage-item" id="stage5">
+              <div class="stage-dot">5</div>
+              <div class="stage-label">AI JET Heatmap Overlay</div>
+            </div>
+            <div class="stage-item" id="stage6">
+              <div class="stage-dot">6</div>
+              <div class="stage-label">HIPAA Audit & Alert Dispatch</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Webhook Alert Banner (Visible when REVIEW is triggered) -->
+        <div class="webhook-banner-alert" id="webhookBanner">
+          <div class="webhook-alert-info">
+            <span>🚨</span>
+            <span>Urgent Review Alert Triggered: Surgical On-Call Webhook Dispatched via WhatsApp/SMS</span>
+          </div>
+          <button type="button" class="btn-inspect-webhook" onclick="openWebhookModal()">
+            Inspect Alert Payload
+          </button>
+        </div>
+
+        <!-- Radiograph Viewer & Split Slider -->
+        <div class="viewer-card">
+          <div class="viewer-toolbar">
+            <div class="viewer-mode-toggles">
+              <button type="button" class="view-mode-btn active" id="modeSplit" onclick="setViewMode('split')">Split Slider</button>
+              <button type="button" class="view-mode-btn" id="modeSide" onclick="setViewMode('side')">Side-by-Side</button>
+              <button type="button" class="view-mode-btn" id="modeHeatmap" onclick="setViewMode('heatmap')">Heatmap</button>
+              <button type="button" class="view-mode-btn" id="modeOriginal" onclick="setViewMode('original')">Raw X-Ray</button>
+            </div>
+
+            <div class="viewer-controls">
+              <div class="control-item">
+                <span>Overlay Opacity:</span>
+                <input type="range" id="opacitySlider" min="0" max="100" value="100" oninput="updateHeatmapOpacity(this.value)" />
+                <span id="opacityDisplay" style="font-family: var(--font-mono); width: 32px;">100%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Viewport Area -->
+          <div class="radiograph-viewport" id="viewport">
+            
+            <!-- Empty State Placeholder -->
+            <div class="viewport-placeholder" id="viewportPlaceholder">
+              <div class="placeholder-icon">🩻</div>
+              <p>Select a 1-click sample preset or upload a dental radiograph to begin AI analysis</p>
+            </div>
+
+            <!-- Interactive Split Comparison View -->
+            <div class="split-viewer" id="splitViewer">
+              <div class="img-layer layer-original">
+                <img id="imgOriginalSplit" src="" alt="Raw Dental Radiograph" />
+                <div class="viewport-label left">Raw Radiograph</div>
+              </div>
+              
+              <div class="img-layer layer-heatmap" id="heatmapLayer">
+                <img id="imgHeatmapSplit" src="" alt="AI JET Heatmap Overlay" />
+                <div class="viewport-label right">AI JET Heatmap + HUD</div>
+              </div>
+              
+              <!-- Draggable Divider Handle -->
+              <div class="split-handle" id="splitHandle">
+                <div class="split-handle-btn">↔</div>
+              </div>
+            </div>
+
+            <!-- Side-by-Side Synchronized View -->
+            <div class="side-by-side-viewer" id="sideViewer">
+              <div class="side-pane">
+                <img id="imgOriginalSide" src="" alt="Raw Dental Radiograph" />
+                <div class="viewport-label left">Raw Radiograph</div>
+              </div>
+              <div class="side-pane">
+                <img id="imgHeatmapSide" src="" alt="AI JET Heatmap Overlay" />
+                <div class="viewport-label right">AI Heatmap + HUD</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Diagnostic Findings & Explainable AI (XAI) Panel -->
+        <div class="results-section" id="resultsSection">
+          
+          <!-- Triage Decision Banner -->
+          <div class="triage-decision-banner success" id="triageBanner">
+            <div class="triage-main-info">
+              <div class="triage-icon-badge" id="triageIcon">✓</div>
+              <div class="triage-texts">
+                <h2 id="triageTitle">STATUS: NORMAL ALVEOLAR BONE HEALING</h2>
+                <p id="triageSubtext">Bone graft structure is consolidated and stable with normal radio-opacity.</p>
+              </div>
+            </div>
+            <div class="triage-job-meta">
+              <div id="resultJobId">cg-scan-884920</div>
+              <div id="resultTimestamp">2026-09-09 22:50 UTC</div>
+            </div>
+          </div>
+
+          <!-- Quantitative Metrics Grid -->
+          <div class="xai-metrics-grid">
+            
+            <!-- Bone Density Index Card -->
+            <div class="xai-card">
+              <div class="xai-card-header">
+                <span class="xai-card-title">Bone Density Index (BDI)</span>
+                <span class="badge-tag">Normalized 0-1</span>
+              </div>
+              <div class="density-meter-container">
+                <div class="density-value-row">
+                  <span class="density-number" id="densityValue">0.6420</span>
+                  <span class="density-state-tag healthy" id="densityStateTag">Healthy Graft</span>
+                </div>
+                <div class="density-bar-track">
+                  <div class="density-threshold-marker" title="Clinical Decision Threshold (0.43)"></div>
+                  <div class="density-bar-fill" id="densityBarFill" style="width: 64.2%;"></div>
+                </div>
+                <div class="density-scale-labels">
+                  <span>0.0 (Resorption)</span>
+                  <span>Threshold 0.43</span>
+                  <span>1.0 (Dense)</span>
+                </div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-dim); margin-top: 8px;">
+                Measures mean pixel radiopacity in the alveolar cleft region. Values &ge; 0.43 indicate healthy osteointegration.
+              </p>
+            </div>
+
+            <!-- Model Confidence Card -->
+            <div class="xai-card">
+              <div class="xai-card-header">
+                <span class="xai-card-title">Inference Confidence</span>
+                <span class="badge-tag">Computer Vision</span>
+              </div>
+              <div class="confidence-container">
+                <svg class="radial-progress-svg" viewBox="0 0 60 60">
+                  <circle class="radial-bg" cx="30" cy="30" r="25" />
+                  <circle class="radial-bar" id="radialConfidenceBar" cx="30" cy="30" r="25" />
+                </svg>
+                <div class="confidence-info">
+                  <span class="confidence-number" id="confidenceValue">94.0%</span>
+                  <span class="confidence-label">Model Certainty Score</span>
+                </div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-dim); margin-top: 8px;">
+                Edge contour alignment and histogram density concordance.
+              </p>
+            </div>
+
+            <!-- ROI Bounding Box Details -->
+            <div class="xai-card">
+              <div class="xai-card-header">
+                <span class="xai-card-title">Identified ROI Region</span>
+                <span class="badge-tag">HUD Coordinates</span>
+              </div>
+              <div class="bbox-coords-grid">
+                <div class="coord-pill"><span class="coord-k">X:</span><span class="coord-v" id="bboxX">213 px</span></div>
+                <div class="coord-pill"><span class="coord-k">Y:</span><span class="coord-v" id="bboxY">320 px</span></div>
+                <div class="coord-pill"><span class="coord-k">Width:</span><span class="coord-v" id="bboxW">213 px</span></div>
+                <div class="coord-pill"><span class="coord-k">Height:</span><span class="coord-v" id="bboxH">160 px</span></div>
+              </div>
+              <p style="font-size: 11px; color: var(--text-dim); margin-top: 8px;">
+                Primary alveolar bone graft region identified via Canny morphological filters.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Clinical Recommendations & Next Steps -->
+          <div class="recommendation-card">
+            <div class="rec-title">📋 Clinical Recommendation & Action Protocol</div>
+            <div class="rec-text" id="recText">
+              Normal Alveolar Bone Healing — Graft Structure Stable
+            </div>
+            <div class="protocol-text">
+              <strong>Clinical Protocol:</strong> Correlate automated computer vision assessment with physical palpation and periodontal probing during routine surgical follow-up.
+            </div>
+          </div>
+
+          <!-- Actions: PDF Report Download & Webhook View -->
+          <div class="action-buttons-row">
+            <button type="button" class="btn-secondary btn-download-pdf" id="btnDownloadReport" onclick="downloadPdfReport()">
+              <span>📄 Download Official Clinical PDF Report</span>
+            </button>
+            <button type="button" class="btn-secondary" onclick="refreshAuditLogs()">
+              <span>🔄 Refresh HIPAA Audit Trail</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- HIPAA Compliance Audit Trail Live Table -->
+    <section class="audit-section">
+      <div class="audit-table-container">
+        <div class="card-header">
+          <h2 class="card-title">🛡️ Immutable HIPAA Compliance Audit Trail</h2>
+          <span class="badge-tag">JSONL SHA-256 Ledger</span>
+        </div>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+          Certified audit trail records for compliance verification according to HIPAA Security Rule 45 CFR § 164.312(b).
+        </p>
+        
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Timestamp (UTC)</th>
+              <th>Scan Job ID</th>
+              <th>SHA-256 Radiograph Hash</th>
+              <th>Event Type</th>
+              <th>Triage Outcome</th>
+              <th>Compliance Reference</th>
+            </tr>
+          </thead>
+          <tbody id="auditTableBody">
+            <tr>
+              <td colspan="6" style="text-align: center; color: var(--text-dim);">Loading audit logs...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Emergency Webhook Alert Modal -->
+  <div class="modal-overlay" id="webhookModal" onclick="closeWebhookModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🚨</span>
+          <span>Emergency Clinical Alert Webhook Payload</span>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeWebhookModal()">✕</button>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+        Dispatched automatically to <strong>Pediatric Craniofacial Surgical On-Call</strong> via WhatsApp Clinician Direct & Hospital SMS Triage Gateway.
+      </p>
+      <pre class="code-preview-block" id="webhookPayloadCode">{ "event": "URGENT_TRIAGE_ALERT" }</pre>
+      <div style="margin-top: 16px; text-align: right;">
+        <button type="button" class="btn-secondary" style="display: inline-flex;" onclick="closeWebhookModal()">Close Inspector</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client Application Logic -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
