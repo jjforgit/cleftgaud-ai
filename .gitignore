@@ -26,3 +26,4 @@ Thumbs.db
 *.log
 scratch/
 .pytest_cache/
+dataset/

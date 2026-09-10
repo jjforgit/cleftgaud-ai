@@ -1,0 +1,78 @@
+{
+  "arch": "resnet18",
+  "classes": [
+    "defect",
+    "normal"
+  ],
+  "epochs_trained": 6,
+  "training_time_seconds": 20.4,
+  "best_val_f1": 1.0,
+  "test_metrics": {
+    "loss": 0.0002,
+    "accuracy": 1.0,
+    "sensitivity": 1.0,
+    "specificity": 1.0,
+    "precision": 1.0,
+    "f1_score": 1.0,
+    "tp": 30,
+    "fp": 0,
+    "tn": 30,
+    "fn": 0
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.1551,
+      "train_acc": 0.9333,
+      "val_loss": 0.0016,
+      "val_acc": 1.0,
+      "val_f1": 1.0,
+      "val_sensitivity": 1.0
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.003,
+      "train_acc": 1.0,
+      "val_loss": 0.0002,
+      "val_acc": 1.0,
+      "val_f1": 1.0,
+      "val_sensitivity": 1.0
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.0018,
+      "train_acc": 1.0,
+      "val_loss": 0.0002,
+      "val_acc": 1.0,
+      "val_f1": 1.0,
+      "val_sensitivity": 1.0
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.002,
+      "train_acc": 1.0,
+      "val_loss": 0.0002,
+      "val_acc": 1.0,
+      "val_f1": 1.0,
+      "val_sensitivity": 1.0
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.001,
+      "train_acc": 1.0,
+      "val_loss": 0.0002,
+      "val_acc": 1.0,
+      "val_f1": 1.0,
+      "val_sensitivity": 1.0
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.001,
+      "train_acc": 1.0,
+      "val_loss": 0.0002,
+      "val_acc": 1.0,
+      "val_f1": 1.0,
+      "val_sensitivity": 1.0
+    }
+  ]
+}
