@@ -69,7 +69,7 @@ class HealthResponse(BaseModel):
     """Microservice health and model readiness status."""
     status: str = Field(default="healthy", description="System operational status")
     model_version: str = Field(default="1.0.4", description="Deployed neural/computer vision model checkpoint version")
-    gpu_status: str = Field(default="simulated", description="GPU acceleration cluster status")
+    gpu_status: str = Field(default="cpu", description="Torch inference device: mps, cuda, or cpu")
     service: str = Field(default="cleftguard-ai-inference", description="Microservice identifier")
 
 

@@ -37,7 +37,7 @@ from schemas import (
     ReportRequest,
     RootResponse,
 )
-from services.ai_service import analyze_scan, validate_image_file
+from services.ai_service import analyze_scan, get_inference_device, validate_image_file
 from services.notification_service import NOTIFICATIONS_LOG_FILE, dispatch_urgent_review_webhook
 from services.report_service import generate_triage_pdf
 from utils.audit_logger import compute_file_hash, get_recent_audit_logs, log_audit_event
@@ -160,7 +160,7 @@ async def health_check() -> HealthResponse:
     return HealthResponse(
         status="healthy",
         model_version=API_VERSION,
-        gpu_status="simulated",
+        gpu_status=get_inference_device(),
         service="cleftguard-ai-inference",
     )
 

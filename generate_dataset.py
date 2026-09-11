@@ -172,17 +172,40 @@ def build_dataset(
     print(f"📁 Root dataset path: {root.resolve()}")
 
 
+def write_ui_samples(output_dir: str = "static/samples") -> None:
+    """Write the two 1-click workstation presets with fixed seeds."""
+    root = Path(output_dir)
+    root.mkdir(parents=True, exist_ok=True)
+
+    healthy_path = root / "sample_healthy.png"
+    defect_path = root / "sample_defect.png"
+
+    cv2.imwrite(str(healthy_path), generate_single_radiograph(is_healthy=True, seed=42))
+    cv2.imwrite(str(defect_path), generate_single_radiograph(is_healthy=False, seed=7))
+
+    print(f"✓ UI sample radiographs written to {root.resolve()}")
+    print(f"   {healthy_path.name}  {defect_path.name}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate synthetic dental radiograph dataset for CleftGuard AI")
     parser.add_argument("--output", type=str, default="dataset", help="Output dataset directory")
     parser.add_argument("--train", type=int, default=120, help="Train samples per class")
     parser.add_argument("--val", type=int, default=30, help="Validation samples per class")
     parser.add_argument("--test", type=int, default=30, help="Test samples per class")
+    parser.add_argument(
+        "--ui-samples",
+        action="store_true",
+        help="Write static/samples/sample_healthy.png and sample_defect.png, then exit",
+    )
     args = parser.parse_args()
 
-    build_dataset(
-        output_dir=args.output,
-        train_count=args.train,
-        val_count=args.val,
-        test_count=args.test,
-    )
+    if args.ui_samples:
+        write_ui_samples()
+    else:
+        build_dataset(
+            output_dir=args.output,
+            train_count=args.train,
+            val_count=args.val,
+            test_count=args.test,
+        )

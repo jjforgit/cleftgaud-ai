@@ -124,6 +124,15 @@ class GradCAMHook:
         self.bwd_hook.remove()
 
 
+def get_inference_device() -> str:
+    """Return the Torch backend available for inference without loading weights."""
+    if torch.backends.mps.is_available():
+        return "mps"
+    if torch.cuda.is_available():
+        return "cuda"
+    return "cpu"
+
+
 def _get_pytorch_model() -> tuple[Optional[nn.Module], Optional[torch.device], list[str]]:
     """Load or retrieve cached PyTorch medical model checkpoint."""
     global _CACHED_MODEL, _CACHED_DEVICE, _CACHED_CLASSES
@@ -135,13 +144,7 @@ def _get_pytorch_model() -> tuple[Optional[nn.Module], Optional[torch.device], l
         return None, None, _CACHED_CLASSES
 
     try:
-        # Detect device
-        if torch.backends.mps.is_available():
-            device = torch.device("mps")
-        elif torch.cuda.is_available():
-            device = torch.device("cuda")
-        else:
-            device = torch.device("cpu")
+        device = torch.device(get_inference_device())
 
         checkpoint = torch.load(str(MODEL_WEIGHTS_PATH), map_location=device)
         arch = checkpoint.get("arch", "resnet18")
