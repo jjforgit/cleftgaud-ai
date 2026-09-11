@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CleftGuard Studio — Clinical Radiograph AI Triage</title>
-  <meta name="description" content="Hospital-grade AI triage and computer vision workstation for pediatric alveolar cleft bone graft evaluation." />
+  <title>CleftGuard Studio — Clinical AI Triage & Assessment</title>
+  <meta name="description" content="Clean hospital-grade AI triage and computer vision workstation for pediatric alveolar cleft bone graft evaluation." />
   
   <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -23,7 +23,7 @@
         <div class="brand-icon">🦷</div>
         <div class="brand-titles">
           <h1>CleftGuard Studio <span class="badge-tag">v1.0.4 • PyTorch</span></h1>
-          <p>Alveolar Bone Graft AI Assessment & Clinical Triage Workstation</p>
+          <p>Pediatric Alveolar Cleft AI Triage & Assessment Workstation</p>
         </div>
       </div>
       
@@ -33,245 +33,216 @@
           <span>GPU Acceleration: Active</span>
         </div>
         <div class="status-pill">
-          <span>🛡️ HIPAA 164.312(b) Audit Trail</span>
+          <span>🛡️ HIPAA 164.312(b) Audit Active</span>
         </div>
-        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Switch between Hospital Light and Clinical Dark Mode">
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Theme">
           <span id="themeIcon">🌙</span>
           <span id="themeLabel">Dark Mode</span>
         </button>
       </div>
     </header>
 
-    <!-- 3-Column Studio Grid Layout -->
-    <main class="studio-grid">
-      
-      <!-- ====================================================================
-           COLUMN 1: Patient Health Record & Ingestion
-           ==================================================================== -->
-      <aside class="patient-panel">
+    <!-- ====================================================================
+         SECTION 1: CASE SETUP & INGESTION (Spacious Horizontal Card)
+         ==================================================================== -->
+    <section class="setup-card">
+      <div class="section-headline">
+        <span>Step 1: Case Setup & Radiograph Ingestion</span>
+      </div>
+
+      <div class="setup-grid">
         
-        <!-- Patient Info Card -->
-        <div class="studio-card">
-          <div class="card-header">
-            <h2 class="card-title">👤 Patient Record</h2>
-            <span class="badge-tag">EHR</span>
+        <!-- Block A: 1-Click Sample Presets -->
+        <div class="setup-block">
+          <div class="block-title">⚡ 1-Click Clinical Presets:</div>
+          <div class="preset-buttons-row">
+            <button type="button" class="preset-btn" id="btnPresetHealthy" onclick="loadSamplePreset('healthy')">
+              <span class="preset-title">🟢 Sample A</span>
+              <span class="preset-desc">Normal Bone Graft (BDI ≥ 0.43)</span>
+            </button>
+            <button type="button" class="preset-btn" id="btnPresetDefect" onclick="loadSamplePreset('defect')">
+              <span class="preset-title">🔴 Sample B</span>
+              <span class="preset-desc">Cleft Resorption Defect (BDI &lt; 0.43)</span>
+            </button>
           </div>
+        </div>
 
-          <div class="patient-info-box">
-            <div class="patient-row">
-              <span class="patient-label">Record MRN:</span>
-              <span class="patient-val" id="displayMrn">PT-884920</span>
-            </div>
-            <div class="patient-row">
-              <span class="patient-label">Modality:</span>
-              <span class="patient-val">Dental Orthopantomogram</span>
-            </div>
-            <div class="patient-row">
-              <span class="patient-label">Department:</span>
-              <span class="patient-val">Craniofacial Surgery</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="patientIdInput">Patient Identifier</label>
-            <input type="text" id="patientIdInput" class="form-input" value="PT-884920" oninput="document.getElementById('displayMrn').textContent = this.value || 'PT-UNKNOWN'" />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="notesInput">Clinical Indication</label>
-            <input type="text" id="notesInput" class="form-input" value="Pediatric alveolar cleft 6-mo post-bone graft" />
-          </div>
-
-          <!-- 1-Click Clinical Sample Presets -->
-          <div class="preset-section">
-            <div class="section-label">⚡ 1-Click Sample Presets:</div>
-            <div class="preset-buttons">
-              <button type="button" class="preset-btn" id="btnPresetHealthy" onclick="loadSamplePreset('healthy')">
-                <span class="preset-title">🟢 Sample A (Healthy)</span>
-                <span class="preset-desc">Normal Alveolar Graft Healing (BDI ≥ 0.43)</span>
-              </button>
-              <button type="button" class="preset-btn" id="btnPresetDefect" onclick="loadSamplePreset('defect')">
-                <span class="preset-title">🔴 Sample B (Defect)</span>
-                <span class="preset-desc">Cleft Resorption Cavity (BDI &lt; 0.43)</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Dropzone File Upload -->
+        <!-- Block B: Upload Custom Radiograph -->
+        <div class="setup-block">
+          <div class="block-title">📁 Upload Custom Dental X-Ray:</div>
           <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
-            <div class="dropzone-icon">📷</div>
-            <div class="dropzone-text">Drop dental radiograph here</div>
-            <div class="dropzone-hint">or click to browse from device (JPG/PNG)</div>
+            <div class="dropzone-text">Click or Drop Dental Radiograph</div>
+            <div class="dropzone-hint">Supports standard JPG or PNG dental X-rays</div>
             <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
           </div>
-
-          <!-- File Preview Strip -->
+          
           <div class="file-preview-strip" id="filePreviewStrip">
-            <div class="file-info">
-              <span>🩻</span>
-              <span id="fileNameDisplay">radiograph.png</span>
-            </div>
-            <button type="button" class="file-remove-btn" onclick="clearSelectedFile()" title="Remove file">✕</button>
-          </div>
-
-          <!-- Run Triage Button -->
-          <button type="button" class="btn-primary" id="btnAnalyze" onclick="runAnalysis()" disabled>
-            <span>⚡ Run Clinical AI Triage</span>
-          </button>
-        </div>
-
-      </aside>
-
-      <!-- ====================================================================
-           COLUMN 2: Radiograph Studio & Visualizer
-           ==================================================================== -->
-      <section class="studio-center-panel">
-        
-        <!-- Live AI Multi-Stage Pipeline Tracker -->
-        <div class="pipeline-card" id="pipelineCard">
-          <div class="pipeline-header">
-            <span class="pipeline-title">⚡ Neural Inference & Grad-CAM Engine Active</span>
-            <span class="pipeline-timer" id="pipelineTimer">0.0s / 1.2s</span>
-          </div>
-          <div class="pipeline-progress-bar-bg">
-            <div class="pipeline-progress-bar" id="pipelineProgressBar"></div>
-          </div>
-          <div class="pipeline-stages">
-            <div class="stage-item" id="stage1"><div class="stage-dot">1</div><div class="stage-label">SHA-256 Hash</div></div>
-            <div class="stage-item" id="stage2"><div class="stage-dot">2</div><div class="stage-label">Alveolar ROI</div></div>
-            <div class="stage-item" id="stage3"><div class="stage-dot">3</div><div class="stage-label">Density (BDI)</div></div>
-            <div class="stage-item" id="stage4"><div class="stage-dot">4</div><div class="stage-label">ResNet-18 Pass</div></div>
-            <div class="stage-item" id="stage5"><div class="stage-dot">5</div><div class="stage-label">Grad-CAM Heatmap</div></div>
-            <div class="stage-item" id="stage6"><div class="stage-dot">6</div><div class="stage-label">HIPAA Audit</div></div>
+            <div class="file-info" id="fileNameDisplay">radiograph.png</div>
+            <button type="button" class="file-remove-btn" onclick="clearSelectedFile()">✕</button>
           </div>
         </div>
 
-        <!-- Radiograph Viewer Card -->
-        <div class="studio-card">
-          <div class="viewer-toolbar">
-            <div class="segmented-control">
-              <button type="button" class="segmented-btn active" id="modeSplit" onclick="setViewMode('split')">Split Slider</button>
-              <button type="button" class="segmented-btn" id="modeSide" onclick="setViewMode('side')">Side-by-Side</button>
-              <button type="button" class="segmented-btn" id="modeHeatmap" onclick="setViewMode('heatmap')">Grad-CAM</button>
-              <button type="button" class="segmented-btn" id="modeOriginal" onclick="setViewMode('original')">Raw X-Ray</button>
-            </div>
+        <!-- Block C: Patient Record Details -->
+        <div class="setup-block">
+          <div class="block-title">👤 Patient Record (EHR):</div>
+          <input type="text" id="patientIdInput" class="form-input-sm" value="PT-884920" placeholder="Patient MRN ID" />
+          <input type="text" id="notesInput" class="form-input-sm" value="Pediatric alveolar cleft 6-mo post-bone graft" placeholder="Clinical Indication" />
+        </div>
 
-            <div class="viewer-controls">
-              <div class="control-item">
-                <span>Overlay:</span>
-                <input type="range" id="opacitySlider" min="0" max="100" value="100" oninput="updateHeatmapOpacity(this.value)" />
-                <span id="opacityDisplay" style="font-family: var(--font-mono); width: 30px;">100%</span>
-              </div>
-            </div>
+      </div>
+
+      <!-- Action Button Row -->
+      <div class="action-cta-row">
+        <button type="button" class="btn-primary-cta" id="btnAnalyze" onclick="runAnalysis()" disabled>
+          <span>⚡ Run Clinical AI Triage</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         LIVE PIPELINE TRACKER
+         ==================================================================== -->
+    <div class="pipeline-card" id="pipelineCard">
+      <div class="pipeline-header">
+        <span class="pipeline-title">⚡ Neural Inference & Grad-CAM Engine Processing</span>
+        <span class="pipeline-timer" id="pipelineTimer">0.0s / 1.2s</span>
+      </div>
+      <div class="pipeline-progress-bar-bg">
+        <div class="pipeline-progress-bar" id="pipelineProgressBar"></div>
+      </div>
+      <div class="pipeline-stages">
+        <div class="stage-item" id="stage1"><div class="stage-dot">1</div><div class="stage-label">SHA-256 Hash</div></div>
+        <div class="stage-item" id="stage2"><div class="stage-dot">2</div><div class="stage-label">Alveolar ROI</div></div>
+        <div class="stage-item" id="stage3"><div class="stage-dot">3</div><div class="stage-label">Density (BDI)</div></div>
+        <div class="stage-item" id="stage4"><div class="stage-dot">4</div><div class="stage-label">ResNet-18 Pass</div></div>
+        <div class="stage-item" id="stage5"><div class="stage-dot">5</div><div class="stage-label">Grad-CAM Heatmap</div></div>
+        <div class="stage-item" id="stage6"><div class="stage-dot">6</div><div class="stage-label">HIPAA Audit</div></div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         SECTION 2: WORKSTATION (60% Viewer / 40% Findings)
+         ==================================================================== -->
+    <section class="workstation-grid">
+      
+      <!-- Left: High-Res Radiograph Viewer -->
+      <div class="viewer-card">
+        <div class="viewer-toolbar">
+          <div class="segmented-control">
+            <button type="button" class="segmented-btn active" id="modeSplit" onclick="setViewMode('split')">Split Slider</button>
+            <button type="button" class="segmented-btn" id="modeSide" onclick="setViewMode('side')">Side-by-Side</button>
+            <button type="button" class="segmented-btn" id="modeHeatmap" onclick="setViewMode('heatmap')">Grad-CAM</button>
+            <button type="button" class="segmented-btn" id="modeOriginal" onclick="setViewMode('original')">Raw X-Ray</button>
           </div>
 
-          <!-- Viewport Canvas -->
-          <div class="radiograph-viewport" id="viewport">
+          <div class="control-item">
+            <span>Overlay Opacity:</span>
+            <input type="range" id="opacitySlider" min="0" max="100" value="100" oninput="updateHeatmapOpacity(this.value)" />
+            <span id="opacityDisplay" style="font-family: var(--font-mono); width: 30px;">100%</span>
+          </div>
+        </div>
+
+        <!-- Viewport Area -->
+        <div class="radiograph-viewport" id="viewport">
+          
+          <div class="viewport-placeholder" id="viewportPlaceholder">
+            <div class="placeholder-icon">🩻</div>
+            <p>Select a 1-click clinical preset or upload a dental radiograph above to begin AI analysis</p>
+          </div>
+
+          <!-- Split Comparison Slider -->
+          <div class="split-viewer" id="splitViewer">
+            <div class="img-layer layer-original">
+              <img id="imgOriginalSplit" src="" alt="Raw Dental Radiograph" />
+              <div class="viewport-label left">Raw Radiograph</div>
+            </div>
             
-            <!-- Empty State Placeholder -->
-            <div class="viewport-placeholder" id="viewportPlaceholder">
-              <div class="placeholder-icon">🩻</div>
-              <p>Select a 1-click sample preset or upload a dental radiograph to begin AI analysis</p>
+            <div class="img-layer layer-heatmap" id="heatmapLayer">
+              <img id="imgHeatmapSplit" src="" alt="AI Grad-CAM Heatmap Overlay" />
+              <div class="viewport-label right">Grad-CAM Heatmap + HUD</div>
             </div>
-
-            <!-- Interactive Split Comparison Slider -->
-            <div class="split-viewer" id="splitViewer">
-              <div class="img-layer layer-original">
-                <img id="imgOriginalSplit" src="" alt="Raw Dental Radiograph" />
-                <div class="viewport-label left">Raw Radiograph</div>
-              </div>
-              
-              <div class="img-layer layer-heatmap" id="heatmapLayer">
-                <img id="imgHeatmapSplit" src="" alt="AI Grad-CAM Heatmap Overlay" />
-                <div class="viewport-label right">Grad-CAM Heatmap + HUD</div>
-              </div>
-              
-              <!-- Draggable Divider -->
-              <div class="split-handle" id="splitHandle">
-                <div class="split-handle-btn">↔</div>
-              </div>
+            
+            <div class="split-handle" id="splitHandle">
+              <div class="split-handle-btn">↔</div>
             </div>
-
-            <!-- Side by Side Synchronized View -->
-            <div class="side-by-side-viewer" id="sideViewer">
-              <div class="side-pane">
-                <img id="imgOriginalSide" src="" alt="Raw Dental Radiograph" />
-                <div class="viewport-label left">Raw Radiograph</div>
-              </div>
-              <div class="side-pane">
-                <img id="imgHeatmapSide" src="" alt="AI Grad-CAM Heatmap Overlay" />
-                <div class="viewport-label right">Grad-CAM + HUD</div>
-              </div>
-            </div>
-
           </div>
+
+          <!-- Side by Side Synchronized View -->
+          <div class="side-by-side-viewer" id="sideViewer">
+            <div class="side-pane">
+              <img id="imgOriginalSide" src="" alt="Raw Dental Radiograph" />
+              <div class="viewport-label left">Raw Radiograph</div>
+            </div>
+            <div class="side-pane">
+              <img id="imgHeatmapSide" src="" alt="AI Grad-CAM Heatmap Overlay" />
+              <div class="viewport-label right">Grad-CAM + HUD</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Right: AI Clinical Decision & Findings Card -->
+      <div class="findings-card">
+        <div class="findings-header">
+          <div class="findings-title">Step 2: AI Clinical Findings</div>
+          <span class="badge-tag">Neural Triage</span>
         </div>
 
-      </section>
-
-      <!-- ====================================================================
-           COLUMN 3: AI Diagnostic Decision & Clinical Actions
-           ==================================================================== -->
-      <aside class="results-panel">
-        
-        <!-- Emergency Webhook Alert Banner (Visible when REVIEW is triggered) -->
+        <!-- Emergency Webhook Alert Banner (When REVIEW is triggered) -->
         <div class="webhook-banner-alert" id="webhookBanner">
           <div class="webhook-alert-info">
             <span>🚨</span>
-            <span>Urgent Review Alert Dispatched</span>
+            <span>Urgent Review Alert Triggered</span>
           </div>
           <button type="button" class="btn-inspect-webhook" onclick="openWebhookModal()">
             Inspect Alert
           </button>
         </div>
 
-        <div class="studio-card">
-          <div class="card-header">
-            <h2 class="card-title">📊 Clinical AI Decision</h2>
-            <span class="badge-tag">Triage</span>
-          </div>
-
-          <!-- Triage Decision Status Card -->
-          <div class="triage-decision-card success" id="triageBanner">
-            <div class="triage-main-info">
-              <div class="triage-icon-badge" id="triageIcon">✓</div>
-              <div class="triage-texts">
-                <h2 id="triageTitle">NORMAL GRAFT HEALING</h2>
-                <p id="triageSubtext">Bone graft structure is consolidated and stable with uniform radio-opacity.</p>
-              </div>
-            </div>
-            <div class="triage-meta-row">
-              <span id="resultJobId">Job: cg-scan-884920</span>
-              <span id="resultTimestamp">2026-09-11 UTC</span>
+        <!-- Triage Status Banner -->
+        <div class="triage-decision-card success" id="triageBanner">
+          <div class="triage-main-info">
+            <div class="triage-icon-badge" id="triageIcon">✓</div>
+            <div class="triage-texts">
+              <h2 id="triageTitle">NORMAL GRAFT HEALING</h2>
+              <p id="triageSubtext">Bone graft structure is consolidated and stable with uniform radio-opacity.</p>
             </div>
           </div>
+          <div class="triage-meta-row">
+            <span id="resultJobId">Job: cg-scan-884920</span>
+            <span id="resultTimestamp">2026-09-11 UTC</span>
+          </div>
+        </div>
 
-          <!-- Bone Density Index Box -->
-          <div class="metric-box" style="margin-top: 14px;">
+        <!-- Side-by-Side Metric Gauges -->
+        <div class="metrics-row">
+          
+          <!-- Bone Density Index -->
+          <div class="metric-box">
             <div class="metric-box-title">
-              <span>Bone Density Index (BDI)</span>
+              <span>Bone Density Index</span>
               <span id="densityStateTag" class="density-state-tag healthy">Healthy (≥0.43)</span>
             </div>
             <div class="density-value-row">
               <span class="density-number" id="densityValue">0.6444</span>
-              <span style="font-size: 11px; color: var(--text-dim);">Normalized Radiopacity</span>
+              <span style="font-size: 10px; color: var(--text-dim);">Normalized</span>
             </div>
             <div class="density-bar-track">
-              <div class="density-threshold-marker" title="Clinical Threshold (0.43)"></div>
+              <div class="density-threshold-marker" title="Threshold (0.43)"></div>
               <div class="density-bar-fill" id="densityBarFill" style="width: 64.4%;"></div>
             </div>
             <div class="density-scale-labels">
               <span>0.0 (Resorption)</span>
-              <span>Threshold 0.43</span>
               <span>1.0 (Dense)</span>
             </div>
           </div>
 
-          <!-- Model Confidence Box -->
+          <!-- Model Confidence -->
           <div class="metric-box">
             <div class="metric-box-title">
-              <span>Model Softmax Certainty</span>
-              <span class="badge-tag">PyTorch ResNet</span>
+              <span>Softmax Certainty</span>
+              <span class="badge-tag">PyTorch</span>
             </div>
             <div class="confidence-row">
               <svg class="radial-progress-svg" viewBox="0 0 60 60">
@@ -280,74 +251,75 @@
               </svg>
               <div class="confidence-info">
                 <span class="confidence-number" id="confidenceValue">100.0%</span>
-                <span class="confidence-label">Neural Classification Confidence</span>
+                <span class="confidence-label">Confidence</span>
               </div>
             </div>
           </div>
 
-          <!-- Identified ROI Bounding Box -->
-          <div class="metric-box">
-            <div class="metric-box-title">
-              <span>Identified ROI Coordinates</span>
-              <span class="badge-tag">HUD</span>
-            </div>
-            <div class="bbox-coords-grid">
-              <div class="coord-pill"><span class="coord-k">X:</span><span class="coord-v" id="bboxX">213 px</span></div>
-              <div class="coord-pill"><span class="coord-k">Y:</span><span class="coord-v" id="bboxY">320 px</span></div>
-              <div class="coord-pill"><span class="coord-k">W:</span><span class="coord-v" id="bboxW">213 px</span></div>
-              <div class="coord-pill"><span class="coord-k">H:</span><span class="coord-v" id="bboxH">160 px</span></div>
-            </div>
-          </div>
+        </div>
 
-          <!-- Clinical Recommendations -->
-          <div class="recommendation-box">
-            <div class="rec-title">📋 Recommendation & Protocol</div>
-            <div class="rec-text" id="recText">
-              Normal Alveolar Bone Healing — Graft Structure Stable
-            </div>
+        <!-- Bounding Box Coordinates -->
+        <div class="bbox-box">
+          <div class="metric-box-title">
+            <span>Identified ROI Coordinates</span>
+            <span class="badge-tag">HUD</span>
           </div>
+          <div class="bbox-coords-grid">
+            <div class="coord-pill"><span class="coord-k">X:</span><span class="coord-v" id="bboxX">213 px</span></div>
+            <div class="coord-pill"><span class="coord-k">Y:</span><span class="coord-v" id="bboxY">320 px</span></div>
+            <div class="coord-pill"><span class="coord-k">W:</span><span class="coord-v" id="bboxW">213 px</span></div>
+            <div class="coord-pill"><span class="coord-k">H:</span><span class="coord-v" id="bboxH">160 px</span></div>
+          </div>
+        </div>
 
-          <!-- Action Buttons -->
+        <!-- Recommendation Box -->
+        <div class="recommendation-box">
+          <div class="rec-title">📋 Recommendation & Protocol</div>
+          <div class="rec-text" id="recText">
+            Normal Alveolar Bone Healing — Graft Structure Stable
+          </div>
+        </div>
+
+        <!-- Action Buttons Group -->
+        <div class="action-buttons-group">
           <button type="button" class="btn-secondary btn-download-pdf" id="btnDownloadReport" onclick="downloadPdfReport()">
-            <span>📄 Download Clinical PDF Report</span>
+            <span>📄 Download Official Clinical PDF Report</span>
           </button>
-          
           <button type="button" class="btn-secondary" onclick="refreshAuditLogs()">
             <span>🔄 Refresh HIPAA Audit Ledger</span>
           </button>
         </div>
 
-      </aside>
+      </div>
 
-    </main>
+    </section>
 
     <!-- ====================================================================
-         HIPAA Compliance Audit Trail Live Ledger
+         SECTION 3: HIPAA AUDIT TRAIL LIVE LEDGER
          ==================================================================== -->
-    <section class="audit-section">
-      <div class="studio-card">
-        <div class="card-header">
-          <h2 class="card-title">🛡️ Immutable HIPAA Compliance Audit Ledger</h2>
-          <span class="badge-tag">45 CFR § 164.312(b)</span>
-        </div>
-        <table class="audit-table">
-          <thead>
-            <tr>
-              <th>Timestamp (UTC)</th>
-              <th>Scan Job ID</th>
-              <th>SHA-256 Radiograph Hash</th>
-              <th>Event Type</th>
-              <th>Outcome</th>
-              <th>Compliance Reference</th>
-            </tr>
-          </thead>
-          <tbody id="auditTableBody">
-            <tr>
-              <td colspan="6" style="text-align: center; color: var(--text-dim);">Loading audit logs...</td>
-            </tr>
-          </tbody>
-        </table>
+    <section class="audit-card">
+      <div class="findings-header">
+        <div class="findings-title">🛡️ Immutable HIPAA Security Rule Audit Ledger</div>
+        <span class="badge-tag">45 CFR § 164.312(b)</span>
       </div>
+      
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th>Timestamp (UTC)</th>
+            <th>Scan Job ID</th>
+            <th>SHA-256 Radiograph Hash</th>
+            <th>Event Type</th>
+            <th>Outcome</th>
+            <th>Compliance Reference</th>
+          </tr>
+        </thead>
+        <tbody id="auditTableBody">
+          <tr>
+            <td colspan="6" style="text-align: center; color: var(--text-dim);">Loading audit logs...</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
   </div>
@@ -372,7 +344,7 @@
     </div>
   </div>
 
-  <!-- Application Logic -->
+  <!-- Client Application Logic -->
   <script src="/static/js/app.js"></script>
 </body>
 </html>
