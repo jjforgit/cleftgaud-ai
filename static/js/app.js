@@ -1,14 +1,12 @@
 /**
  * CleftGuard Studio — Clinical Interactive Controller
  * 
- * Manages Dual-Theme engine (Hospital Light / Clinical Dark),
- * 3-column clinical workflow, PyTorch Grad-CAM inference visualization,
- * draggable radiograph split slider, and HIPAA audit ledger.
+ * Clean White & Light Blue Clinical Workstation
+ * Zero Emojis • PyTorch Grad-CAM Inference • Split Slider • HIPAA Ledger
  */
 
 // Application State
 const state = {
-  theme: localStorage.getItem('cleftguard_theme') || 'light',
   selectedFile: null,
   selectedPreset: null,
   rawImageSrc: null,
@@ -28,7 +26,6 @@ const fileNameDisplay = document.getElementById('fileNameDisplay');
 const btnAnalyze = document.getElementById('btnAnalyze');
 const patientIdInput = document.getElementById('patientIdInput');
 const notesInput = document.getElementById('notesInput');
-const displayMrn = document.getElementById('displayMrn');
 
 // Viewport Elements
 const viewportPlaceholder = document.getElementById('viewportPlaceholder');
@@ -69,40 +66,15 @@ const webhookBanner = document.getElementById('webhookBanner');
 const webhookModal = document.getElementById('webhookModal');
 const webhookPayloadCode = document.getElementById('webhookPayloadCode');
 const auditTableBody = document.getElementById('auditTableBody');
-const themeIcon = document.getElementById('themeIcon');
-const themeLabel = document.getElementById('themeLabel');
 
 // ---------------------------------------------------------------------------
-// Initialization & Theme Engine
+// Initialization
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
   setupDropzone();
   setupSplitSlider();
   refreshAuditLogs();
 });
-
-function initTheme() {
-  applyTheme(state.theme);
-}
-
-function toggleTheme() {
-  const newTheme = state.theme === 'light' ? 'dark' : 'light';
-  state.theme = newTheme;
-  localStorage.setItem('cleftguard_theme', newTheme);
-  applyTheme(newTheme);
-}
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  if (theme === 'dark') {
-    themeIcon.textContent = '☀️';
-    themeLabel.textContent = 'Light Mode';
-  } else {
-    themeIcon.textContent = '🌙';
-    themeLabel.textContent = 'Dark Mode';
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Ingestion: Drag & Drop and File Selection
@@ -197,10 +169,7 @@ async function loadSamplePreset(type) {
   const sampleUrl = isHealthy ? '/static/samples/sample_healthy.png' : '/static/samples/sample_defect.png';
   const sampleName = isHealthy ? 'sample_healthy_graft.png' : 'sample_cleft_resorption.png';
 
-  const newMrn = isHealthy ? 'PT-HEALTHY-01' : 'PT-REVIEW-02';
-  patientIdInput.value = newMrn;
-  displayMrn.textContent = newMrn;
-
+  patientIdInput.value = isHealthy ? 'PT-HEALTHY-01' : 'PT-REVIEW-02';
   notesInput.value = isHealthy 
     ? 'Routine 6-mo follow-up: Bone graft consolidation check' 
     : 'Suspected cleft margin resorption / bone defect evaluation';
@@ -247,7 +216,7 @@ async function runAnalysis() {
   if (!state.selectedFile) return;
 
   btnAnalyze.disabled = true;
-  btnAnalyze.innerHTML = `<span>⏳ Running Neural AI Triage...</span>`;
+  btnAnalyze.textContent = 'Running Neural AI Triage...';
   webhookBanner.classList.remove('visible');
   
   startPipelineAnimation();
@@ -285,7 +254,7 @@ async function runAnalysis() {
     alert(`Clinical AI Inference Failed: ${error.message}`);
   } finally {
     btnAnalyze.disabled = false;
-    btnAnalyze.innerHTML = `<span>⚡ Run Clinical AI Triage</span>`;
+    btnAnalyze.textContent = 'Run Clinical AI Triage';
   }
 }
 
@@ -338,7 +307,7 @@ function setStageState(num, status) {
   if (!stage) return;
   if (status === 'completed') {
     stage.className = 'stage-item completed';
-    stage.querySelector('.stage-dot').textContent = '✓';
+    stage.querySelector('.stage-dot').textContent = 'OK';
   } else if (status === 'in-progress') {
     stage.className = 'stage-item in-progress';
   }
@@ -367,7 +336,7 @@ function displayAnalysisResults(data, elapsedSeconds) {
 
   const isHealthy = data.status === 'SUCCESS';
   triageBanner.className = `triage-decision-card ${isHealthy ? 'success' : 'review'}`;
-  triageIcon.textContent = isHealthy ? '✓' : '🚨';
+  triageIcon.textContent = isHealthy ? 'NORMAL' : 'REVIEW';
   
   if (isHealthy) {
     triageTitle.textContent = 'NORMAL GRAFT HEALING';
@@ -425,7 +394,7 @@ function displayAnalysisResults(data, elapsedSeconds) {
       anomaly_region: data.anomaly_bounding_box,
       dispatch_channel: "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
       recipient: "Pediatric Craniofacial Surgical On-Call",
-      message: `🚨 URGENT CLINICAL ALERT: CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #${data.job_id}. Bone Density Index: ${data.bone_density_index.toFixed(4)} (Confidence: ${(data.confidence_score*100).toFixed(1)}%). Secondary surgical review recommended.`
+      message: `URGENT CLINICAL ALERT: CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #${data.job_id}. Bone Density Index: ${data.bone_density_index.toFixed(4)} (Confidence: ${(data.confidence_score*100).toFixed(1)}%). Secondary surgical review recommended.`
     };
     webhookPayloadCode.textContent = JSON.stringify(webhookPayload, null, 2);
   } else {
@@ -520,8 +489,8 @@ async function downloadPdfReport() {
   }
 
   const btn = document.getElementById('btnDownloadReport');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = `<span>⏳ Generating PDF...</span>`;
+  const originalText = btn.textContent;
+  btn.textContent = 'Generating PDF...';
   btn.disabled = true;
 
   const patientId = patientIdInput.value.trim() || 'PT-UNKNOWN';
@@ -559,7 +528,7 @@ async function downloadPdfReport() {
     console.error('PDF Download Error:', error);
     alert(`Failed to download report: ${error.message}`);
   } finally {
-    btn.innerHTML = originalText;
+    btn.textContent = originalText;
     btn.disabled = false;
   }
 }

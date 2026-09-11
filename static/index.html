@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CleftGuard Studio — Clinical AI Triage & Assessment</title>
-  <meta name="description" content="Clean hospital-grade AI triage and computer vision workstation for pediatric alveolar cleft bone graft evaluation." />
+  <meta name="description" content="Hospital-grade AI triage and computer vision workstation for pediatric alveolar cleft bone graft evaluation." />
   
   <!-- Google Fonts: Outfit & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,7 +20,7 @@
     <!-- Top Header Navigation Bar -->
     <header class="header-bar">
       <div class="brand-section">
-        <div class="brand-icon">🦷</div>
+        <div class="brand-logo-badge">CG</div>
         <div class="brand-titles">
           <h1>CleftGuard Studio <span class="badge-tag">v1.0.4 • PyTorch</span></h1>
           <p>Pediatric Alveolar Cleft AI Triage & Assessment Workstation</p>
@@ -33,12 +33,8 @@
           <span>GPU Acceleration: Active</span>
         </div>
         <div class="status-pill">
-          <span>🛡️ HIPAA 164.312(b) Audit Active</span>
+          <span>HIPAA 164.312(b) Audit Active</span>
         </div>
-        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Theme">
-          <span id="themeIcon">🌙</span>
-          <span id="themeLabel">Dark Mode</span>
-        </button>
       </div>
     </header>
 
@@ -54,14 +50,20 @@
         
         <!-- Block A: 1-Click Sample Presets -->
         <div class="setup-block">
-          <div class="block-title">⚡ 1-Click Clinical Presets:</div>
+          <div class="block-title">Clinical Sample Presets</div>
           <div class="preset-buttons-row">
             <button type="button" class="preset-btn" id="btnPresetHealthy" onclick="loadSamplePreset('healthy')">
-              <span class="preset-title">🟢 Sample A</span>
+              <span class="preset-title">
+                <span class="preset-indicator-dot healthy"></span>
+                Sample A
+              </span>
               <span class="preset-desc">Normal Bone Graft (BDI ≥ 0.43)</span>
             </button>
             <button type="button" class="preset-btn" id="btnPresetDefect" onclick="loadSamplePreset('defect')">
-              <span class="preset-title">🔴 Sample B</span>
+              <span class="preset-title">
+                <span class="preset-indicator-dot defect"></span>
+                Sample B
+              </span>
               <span class="preset-desc">Cleft Resorption Defect (BDI &lt; 0.43)</span>
             </button>
           </div>
@@ -69,7 +71,7 @@
 
         <!-- Block B: Upload Custom Radiograph -->
         <div class="setup-block">
-          <div class="block-title">📁 Upload Custom Dental X-Ray:</div>
+          <div class="block-title">Upload Custom Dental X-Ray</div>
           <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
             <div class="dropzone-text">Click or Drop Dental Radiograph</div>
             <div class="dropzone-hint">Supports standard JPG or PNG dental X-rays</div>
@@ -78,13 +80,13 @@
           
           <div class="file-preview-strip" id="filePreviewStrip">
             <div class="file-info" id="fileNameDisplay">radiograph.png</div>
-            <button type="button" class="file-remove-btn" onclick="clearSelectedFile()">✕</button>
+            <button type="button" class="file-remove-btn" onclick="clearSelectedFile()" title="Remove file">&times;</button>
           </div>
         </div>
 
         <!-- Block C: Patient Record Details -->
         <div class="setup-block">
-          <div class="block-title">👤 Patient Record (EHR):</div>
+          <div class="block-title">Patient Record (EHR)</div>
           <input type="text" id="patientIdInput" class="form-input-sm" value="PT-884920" placeholder="Patient MRN ID" />
           <input type="text" id="notesInput" class="form-input-sm" value="Pediatric alveolar cleft 6-mo post-bone graft" placeholder="Clinical Indication" />
         </div>
@@ -94,7 +96,7 @@
       <!-- Action Button Row -->
       <div class="action-cta-row">
         <button type="button" class="btn-primary-cta" id="btnAnalyze" onclick="runAnalysis()" disabled>
-          <span>⚡ Run Clinical AI Triage</span>
+          Run Clinical AI Triage
         </button>
       </div>
     </section>
@@ -104,7 +106,7 @@
          ==================================================================== -->
     <div class="pipeline-card" id="pipelineCard">
       <div class="pipeline-header">
-        <span class="pipeline-title">⚡ Neural Inference & Grad-CAM Engine Processing</span>
+        <span class="pipeline-title">Neural Inference & Grad-CAM Engine Processing</span>
         <span class="pipeline-timer" id="pipelineTimer">0.0s / 1.2s</span>
       </div>
       <div class="pipeline-progress-bar-bg">
@@ -146,8 +148,7 @@
         <div class="radiograph-viewport" id="viewport">
           
           <div class="viewport-placeholder" id="viewportPlaceholder">
-            <div class="placeholder-icon">🩻</div>
-            <p>Select a 1-click clinical preset or upload a dental radiograph above to begin AI analysis</p>
+            <div>Select a clinical sample preset or upload a dental radiograph above to begin AI analysis</div>
           </div>
 
           <!-- Split Comparison Slider -->
@@ -163,7 +164,7 @@
             </div>
             
             <div class="split-handle" id="splitHandle">
-              <div class="split-handle-btn">↔</div>
+              <div class="split-handle-btn">||</div>
             </div>
           </div>
 
@@ -192,7 +193,6 @@
         <!-- Emergency Webhook Alert Banner (When REVIEW is triggered) -->
         <div class="webhook-banner-alert" id="webhookBanner">
           <div class="webhook-alert-info">
-            <span>🚨</span>
             <span>Urgent Review Alert Triggered</span>
           </div>
           <button type="button" class="btn-inspect-webhook" onclick="openWebhookModal()">
@@ -200,10 +200,10 @@
           </button>
         </div>
 
-        <!-- Triage Status Banner -->
+        <!-- Triage Decision Status Card -->
         <div class="triage-decision-card success" id="triageBanner">
           <div class="triage-main-info">
-            <div class="triage-icon-badge" id="triageIcon">✓</div>
+            <span class="triage-status-pill-badge" id="triageIcon">NORMAL</span>
             <div class="triage-texts">
               <h2 id="triageTitle">NORMAL GRAFT HEALING</h2>
               <p id="triageSubtext">Bone graft structure is consolidated and stable with uniform radio-opacity.</p>
@@ -274,7 +274,7 @@
 
         <!-- Recommendation Box -->
         <div class="recommendation-box">
-          <div class="rec-title">📋 Recommendation & Protocol</div>
+          <div class="rec-title">Recommendation & Protocol</div>
           <div class="rec-text" id="recText">
             Normal Alveolar Bone Healing — Graft Structure Stable
           </div>
@@ -283,10 +283,10 @@
         <!-- Action Buttons Group -->
         <div class="action-buttons-group">
           <button type="button" class="btn-secondary btn-download-pdf" id="btnDownloadReport" onclick="downloadPdfReport()">
-            <span>📄 Download Official Clinical PDF Report</span>
+            Download Official Clinical PDF Report
           </button>
           <button type="button" class="btn-secondary" onclick="refreshAuditLogs()">
-            <span>🔄 Refresh HIPAA Audit Ledger</span>
+            Refresh HIPAA Audit Ledger
           </button>
         </div>
 
@@ -299,7 +299,7 @@
          ==================================================================== -->
     <section class="audit-card">
       <div class="findings-header">
-        <div class="findings-title">🛡️ Immutable HIPAA Security Rule Audit Ledger</div>
+        <div class="findings-title">Immutable HIPAA Security Rule Audit Ledger</div>
         <span class="badge-tag">45 CFR § 164.312(b)</span>
       </div>
       
@@ -329,10 +329,9 @@
     <div class="modal-card" onclick="event.stopPropagation()">
       <div class="modal-header">
         <div class="modal-title">
-          <span>🚨</span>
           <span>Emergency Clinical Alert Webhook Payload</span>
         </div>
-        <button type="button" class="modal-close-btn" onclick="closeWebhookModal()">✕</button>
+        <button type="button" class="modal-close-btn" onclick="closeWebhookModal()">Close</button>
       </div>
       <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
         Dispatched automatically to <strong>Pediatric Craniofacial Surgical On-Call</strong> via WhatsApp Clinician Direct & Hospital SMS Triage Gateway.
