@@ -66,6 +66,9 @@ const webhookBanner = document.getElementById('webhookBanner');
 const webhookModal = document.getElementById('webhookModal');
 const webhookPayloadCode = document.getElementById('webhookPayloadCode');
 const auditTableBody = document.getElementById('auditTableBody');
+const findingsCard = document.getElementById('findingsCard');
+const gpuStatusPill = document.getElementById('gpuStatusPill');
+const gpuStatusLabel = document.getElementById('gpuStatusLabel');
 
 // ---------------------------------------------------------------------------
 // Initialization
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDropzone();
   setupSplitSlider();
   refreshAuditLogs();
+  refreshGpuStatus();
 });
 
 // ---------------------------------------------------------------------------
@@ -149,11 +153,18 @@ function clearSelectedFile() {
   sideViewer.classList.remove('active');
   webhookBanner.classList.remove('visible');
   pipelineCard.classList.remove('active');
+  resetFindingsToIdle();
 }
 
 function clearPresetButtonStates() {
-  document.getElementById('btnPresetHealthy').className = 'preset-btn';
-  document.getElementById('btnPresetDefect').className = 'preset-btn';
+  const healthyBtn = document.getElementById('btnPresetHealthy');
+  const defectBtn = document.getElementById('btnPresetDefect');
+  healthyBtn.className = 'preset-btn';
+  defectBtn.className = 'preset-btn';
+  const healthyDesc = healthyBtn.querySelector('.preset-desc');
+  const defectDesc = defectBtn.querySelector('.preset-desc');
+  if (healthyDesc) healthyDesc.textContent = 'Normal Alveolar Bone Graft (BDI ≥ 0.43) • Continuous trabecular bridge';
+  if (defectDesc) defectDesc.textContent = 'Cleft Resorption Defect (BDI < 0.43) • Significant cleft gap & radiolucency';
 }
 
 // ---------------------------------------------------------------------------
@@ -176,6 +187,9 @@ async function loadSamplePreset(type) {
 
   try {
     const response = await fetch(sampleUrl);
+    if (!response.ok) {
+      throw new Error(`Sample radiograph missing (${response.status})`);
+    }
     const blob = await response.blob();
     const file = new File([blob], sampleName, { type: 'image/png' });
     
@@ -193,7 +207,16 @@ async function loadSamplePreset(type) {
 
   } catch (err) {
     console.error('Failed to load preset:', err);
-    alert('Failed to load preset sample.');
+    state.selectedFile = null;
+    state.selectedPreset = null;
+    btnAnalyze.disabled = true;
+    filePreviewStrip.classList.remove('visible');
+    btn.classList.remove('active', 'healthy', 'defect');
+    btn.classList.add('error');
+    const desc = btn.querySelector('.preset-desc');
+    if (desc) {
+      desc.textContent = 'Could not load sample radiograph. Check static/samples.';
+    }
   }
 }
 
@@ -326,6 +349,7 @@ function completePipelineAnimation() {
 // Display Clinical Findings & XAI
 // ---------------------------------------------------------------------------
 function displayAnalysisResults(data, elapsedSeconds) {
+  findingsCard.classList.add('has-results');
   imgHeatmapSplit.src = state.heatmapImageSrc;
   imgHeatmapSide.src = state.heatmapImageSrc;
   
@@ -542,6 +566,52 @@ function openWebhookModal() {
 
 function closeWebhookModal() {
   webhookModal.classList.remove('open');
+}
+
+function resetFindingsToIdle() {
+  findingsCard.classList.remove('has-results');
+  webhookBanner.classList.remove('visible');
+  triageBanner.className = 'triage-decision-card success';
+  triageIcon.textContent = '—';
+  triageTitle.textContent = 'Awaiting analysis';
+  triageSubtext.textContent = 'Results appear after inference completes.';
+  resultJobId.textContent = 'Job: —';
+  resultTimestamp.textContent = '—';
+  densityValue.textContent = '—';
+  densityStateTag.textContent = '—';
+  densityStateTag.className = 'density-state-tag';
+  densityBarFill.style.width = '0%';
+  confidenceValue.textContent = '—';
+  radialConfidenceBar.style.strokeDashoffset = 157;
+  bboxX.textContent = '—';
+  bboxY.textContent = '—';
+  bboxW.textContent = '—';
+  bboxH.textContent = '—';
+  recText.textContent = '—';
+}
+
+async function refreshGpuStatus() {
+  try {
+    const response = await fetch('/health');
+    if (!response.ok) {
+      throw new Error(`Health check failed (${response.status})`);
+    }
+    const data = await response.json();
+    const device = (data.gpu_status || 'cpu').toLowerCase();
+    gpuStatusPill.classList.remove('offline');
+    gpuStatusPill.classList.add('online');
+
+    if (device === 'mps' || device === 'cuda') {
+      gpuStatusLabel.textContent = `GPU Acceleration: ${device.toUpperCase()}`;
+    } else {
+      gpuStatusLabel.textContent = 'Inference Device: CPU';
+    }
+  } catch (err) {
+    console.error('Health check failed:', err);
+    gpuStatusPill.classList.remove('online');
+    gpuStatusPill.classList.add('offline');
+    gpuStatusLabel.textContent = 'Inference Device: Offline';
+  }
 }
 
 // ---------------------------------------------------------------------------

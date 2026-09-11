@@ -28,9 +28,9 @@
       </div>
       
       <div class="header-actions">
-        <div class="status-pill online">
+        <div class="status-pill" id="gpuStatusPill">
           <span class="pulse-dot"></span>
-          <span>GPU Acceleration: Active</span>
+          <span id="gpuStatusLabel">Checking inference device...</span>
         </div>
         <div class="status-pill">
           <span>HIPAA 164.312(b) Audit Active</span>
@@ -46,32 +46,41 @@
         <span>Step 1: Case Setup & Radiograph Ingestion</span>
       </div>
 
-      <div class="setup-grid">
-        
-        <!-- Block A: 1-Click Sample Presets -->
-        <div class="setup-block">
-          <div class="block-title">Clinical Sample Presets</div>
-          <div class="preset-buttons-row">
-            <button type="button" class="preset-btn" id="btnPresetHealthy" onclick="loadSamplePreset('healthy')">
+      <!-- Prominent Side-by-Side Clinical Sample Presets -->
+      <div class="preset-section-container">
+        <div class="preset-section-header">
+          <div class="block-title">Clinical Sample Presets (1-Click Instant Demo)</div>
+          <span class="preset-section-tag">Standard Benchmark Cases</span>
+        </div>
+        <div class="preset-buttons-row">
+          <button type="button" class="preset-btn" id="btnPresetHealthy" onclick="loadSamplePreset('healthy')">
+            <div class="preset-btn-top">
               <span class="preset-title">
                 <span class="preset-indicator-dot healthy"></span>
                 Sample A
               </span>
-              <span class="preset-desc">Normal Bone Graft (BDI ≥ 0.43)</span>
-            </button>
-            <button type="button" class="preset-btn" id="btnPresetDefect" onclick="loadSamplePreset('defect')">
+              <span class="preset-badge healthy">Normal Bone Graft</span>
+            </div>
+            <div class="preset-desc">Normal Alveolar Bone Graft (BDI ≥ 0.43) • Continuous trabecular bridge</div>
+          </button>
+
+          <button type="button" class="preset-btn" id="btnPresetDefect" onclick="loadSamplePreset('defect')">
+            <div class="preset-btn-top">
               <span class="preset-title">
                 <span class="preset-indicator-dot defect"></span>
                 Sample B
               </span>
-              <span class="preset-desc">Cleft Resorption Defect (BDI &lt; 0.43)</span>
-            </button>
-          </div>
+              <span class="preset-badge defect">Resorption Defect</span>
+            </div>
+            <div class="preset-desc">Cleft Resorption Defect (BDI &lt; 0.43) • Significant cleft gap & radiolucency</div>
+          </button>
         </div>
+      </div>
 
+      <div class="setup-secondary-row">
         <!-- Block B: Upload Custom Radiograph -->
-        <div class="setup-block">
-          <div class="block-title">Upload Custom Dental X-Ray</div>
+        <div class="setup-block upload-block">
+          <div class="block-title">Or Upload Custom Dental X-Ray</div>
           <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
             <div class="dropzone-text">Click or Drop Dental Radiograph</div>
             <div class="dropzone-hint">Supports standard JPG or PNG dental X-rays</div>
@@ -85,12 +94,13 @@
         </div>
 
         <!-- Block C: Patient Record Details -->
-        <div class="setup-block">
+        <div class="setup-block ehr-block">
           <div class="block-title">Patient Record (EHR)</div>
-          <input type="text" id="patientIdInput" class="form-input-sm" value="PT-884920" placeholder="Patient MRN ID" />
-          <input type="text" id="notesInput" class="form-input-sm" value="Pediatric alveolar cleft 6-mo post-bone graft" placeholder="Clinical Indication" />
+          <div class="ehr-inputs-stack">
+            <input type="text" id="patientIdInput" class="form-input-sm" value="PT-884920" placeholder="Patient MRN ID" />
+            <input type="text" id="notesInput" class="form-input-sm" value="Pediatric alveolar cleft 6-mo post-bone graft" placeholder="Clinical Indication" />
+          </div>
         </div>
-
       </div>
 
       <!-- Action Button Row -->
@@ -184,110 +194,115 @@
       </div>
 
       <!-- Right: AI Clinical Decision & Findings Card -->
-      <div class="findings-card">
+      <div class="findings-card" id="findingsCard">
         <div class="findings-header">
           <div class="findings-title">Step 2: AI Clinical Findings</div>
           <span class="badge-tag">Neural Triage</span>
         </div>
 
-        <!-- Emergency Webhook Alert Banner (When REVIEW is triggered) -->
-        <div class="webhook-banner-alert" id="webhookBanner">
-          <div class="webhook-alert-info">
-            <span>Urgent Review Alert Triggered</span>
-          </div>
-          <button type="button" class="btn-inspect-webhook" onclick="openWebhookModal()">
-            Inspect Alert
-          </button>
+        <div class="findings-idle" id="findingsIdle">
+          <p class="findings-idle-title">No scan analyzed yet</p>
+          <p class="findings-idle-copy">Load a sample preset or upload a radiograph, then run clinical AI triage to populate this panel.</p>
         </div>
 
-        <!-- Triage Decision Status Card -->
-        <div class="triage-decision-card success" id="triageBanner">
-          <div class="triage-main-info">
-            <span class="triage-status-pill-badge" id="triageIcon">NORMAL</span>
-            <div class="triage-texts">
-              <h2 id="triageTitle">NORMAL GRAFT HEALING</h2>
-              <p id="triageSubtext">Bone graft structure is consolidated and stable with uniform radio-opacity.</p>
+        <div class="findings-results" id="findingsResults">
+          <!-- Emergency Webhook Alert Banner (When REVIEW is triggered) -->
+          <div class="webhook-banner-alert" id="webhookBanner">
+            <div class="webhook-alert-info">
+              <span>Urgent Review Alert Triggered</span>
             </div>
-          </div>
-          <div class="triage-meta-row">
-            <span id="resultJobId">Job: cg-scan-884920</span>
-            <span id="resultTimestamp">2026-09-11 UTC</span>
-          </div>
-        </div>
-
-        <!-- Side-by-Side Metric Gauges -->
-        <div class="metrics-row">
-          
-          <!-- Bone Density Index -->
-          <div class="metric-box">
-            <div class="metric-box-title">
-              <span>Bone Density Index</span>
-              <span id="densityStateTag" class="density-state-tag healthy">Healthy (≥0.43)</span>
-            </div>
-            <div class="density-value-row">
-              <span class="density-number" id="densityValue">0.6444</span>
-              <span style="font-size: 10px; color: var(--text-dim);">Normalized</span>
-            </div>
-            <div class="density-bar-track">
-              <div class="density-threshold-marker" title="Threshold (0.43)"></div>
-              <div class="density-bar-fill" id="densityBarFill" style="width: 64.4%;"></div>
-            </div>
-            <div class="density-scale-labels">
-              <span>0.0 (Resorption)</span>
-              <span>1.0 (Dense)</span>
-            </div>
+            <button type="button" class="btn-inspect-webhook" onclick="openWebhookModal()">
+              Inspect Alert
+            </button>
           </div>
 
-          <!-- Model Confidence -->
-          <div class="metric-box">
-            <div class="metric-box-title">
-              <span>Softmax Certainty</span>
-              <span class="badge-tag">PyTorch</span>
-            </div>
-            <div class="confidence-row">
-              <svg class="radial-progress-svg" viewBox="0 0 60 60">
-                <circle class="radial-bg" cx="30" cy="30" r="25" />
-                <circle class="radial-bar" id="radialConfidenceBar" cx="30" cy="30" r="25" />
-              </svg>
-              <div class="confidence-info">
-                <span class="confidence-number" id="confidenceValue">100.0%</span>
-                <span class="confidence-label">Confidence</span>
+          <!-- Triage Decision Status Card -->
+          <div class="triage-decision-card success" id="triageBanner">
+            <div class="triage-main-info">
+              <span class="triage-status-pill-badge" id="triageIcon">—</span>
+              <div class="triage-texts">
+                <h2 id="triageTitle">Awaiting analysis</h2>
+                <p id="triageSubtext">Results appear after inference completes.</p>
               </div>
             </div>
+            <div class="triage-meta-row">
+              <span id="resultJobId">Job: —</span>
+              <span id="resultTimestamp">—</span>
+            </div>
           </div>
 
-        </div>
+          <!-- Side-by-Side Metric Gauges -->
+          <div class="metrics-row">
+            
+            <!-- Bone Density Index -->
+            <div class="metric-box">
+              <div class="metric-box-title">
+                <span>Bone Density Index</span>
+                <span id="densityStateTag" class="density-state-tag">—</span>
+              </div>
+              <div class="density-value-row">
+                <span class="density-number" id="densityValue">—</span>
+                <span style="font-size: 10px; color: var(--text-dim);">Normalized</span>
+              </div>
+              <div class="density-bar-track">
+                <div class="density-threshold-marker" title="Threshold (0.43)"></div>
+                <div class="density-bar-fill" id="densityBarFill" style="width: 0%;"></div>
+              </div>
+              <div class="density-scale-labels">
+                <span>0.0 (Resorption)</span>
+                <span>1.0 (Dense)</span>
+              </div>
+            </div>
 
-        <!-- Bounding Box Coordinates -->
-        <div class="bbox-box">
-          <div class="metric-box-title">
-            <span>Identified ROI Coordinates</span>
-            <span class="badge-tag">HUD</span>
-          </div>
-          <div class="bbox-coords-grid">
-            <div class="coord-pill"><span class="coord-k">X:</span><span class="coord-v" id="bboxX">213 px</span></div>
-            <div class="coord-pill"><span class="coord-k">Y:</span><span class="coord-v" id="bboxY">320 px</span></div>
-            <div class="coord-pill"><span class="coord-k">W:</span><span class="coord-v" id="bboxW">213 px</span></div>
-            <div class="coord-pill"><span class="coord-k">H:</span><span class="coord-v" id="bboxH">160 px</span></div>
-          </div>
-        </div>
+            <!-- Model Confidence -->
+            <div class="metric-box">
+              <div class="metric-box-title">
+                <span>Softmax Certainty</span>
+                <span class="badge-tag">PyTorch</span>
+              </div>
+              <div class="confidence-row">
+                <svg class="radial-progress-svg" viewBox="0 0 60 60">
+                  <circle class="radial-bg" cx="30" cy="30" r="25" />
+                  <circle class="radial-bar" id="radialConfidenceBar" cx="30" cy="30" r="25" />
+                </svg>
+                <div class="confidence-info">
+                  <span class="confidence-number" id="confidenceValue">—</span>
+                  <span class="confidence-label">Confidence</span>
+                </div>
+              </div>
+            </div>
 
-        <!-- Recommendation Box -->
-        <div class="recommendation-box">
-          <div class="rec-title">Recommendation & Protocol</div>
-          <div class="rec-text" id="recText">
-            Normal Alveolar Bone Healing — Graft Structure Stable
           </div>
-        </div>
 
-        <!-- Action Buttons Group -->
-        <div class="action-buttons-group">
-          <button type="button" class="btn-secondary btn-download-pdf" id="btnDownloadReport" onclick="downloadPdfReport()">
-            Download Official Clinical PDF Report
-          </button>
-          <button type="button" class="btn-secondary" onclick="refreshAuditLogs()">
-            Refresh HIPAA Audit Ledger
-          </button>
+          <!-- Bounding Box Coordinates -->
+          <div class="bbox-box">
+            <div class="metric-box-title">
+              <span>Identified ROI Coordinates</span>
+              <span class="badge-tag">HUD</span>
+            </div>
+            <div class="bbox-coords-grid">
+              <div class="coord-pill"><span class="coord-k">X:</span><span class="coord-v" id="bboxX">—</span></div>
+              <div class="coord-pill"><span class="coord-k">Y:</span><span class="coord-v" id="bboxY">—</span></div>
+              <div class="coord-pill"><span class="coord-k">W:</span><span class="coord-v" id="bboxW">—</span></div>
+              <div class="coord-pill"><span class="coord-k">H:</span><span class="coord-v" id="bboxH">—</span></div>
+            </div>
+          </div>
+
+          <!-- Recommendation Box -->
+          <div class="recommendation-box">
+            <div class="rec-title">Recommendation & Protocol</div>
+            <div class="rec-text" id="recText">—</div>
+          </div>
+
+          <!-- Action Buttons Group -->
+          <div class="action-buttons-group">
+            <button type="button" class="btn-secondary btn-download-pdf" id="btnDownloadReport" onclick="downloadPdfReport()">
+              Download Official Clinical PDF Report
+            </button>
+            <button type="button" class="btn-secondary" onclick="refreshAuditLogs()">
+              Refresh HIPAA Audit Ledger
+            </button>
+          </div>
         </div>
 
       </div>
