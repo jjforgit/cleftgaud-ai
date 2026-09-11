@@ -20,11 +20,9 @@
     <!-- Top Header Navigation -->
     <header class="header-bar">
       <div class="brand-section">
-        <div class="brand-icon">🦷</div>
-        <div class="brand-titles">
-          <h1>CleftGuard AI <span class="badge-tag">v1.0.4</span></h1>
-          <p>Clinical Dental Radiograph AI Triage & Alveolar Bone Graft Evaluation</p>
-        </div>
+        <a href="/" title="CleftGuard AI - Return to Public Website" style="display: flex; align-items: center; text-decoration: none;">
+          <img src="/static/images/cleftguard-logo.png" alt="CleftGuard AI Logo" style="height: 46px; width: auto; max-width: 220px; object-fit: contain; background: #ffffff; padding: 4px 8px; border-radius: 8px;" />
+        </a>
       </div>
       
       <div class="system-status-pills">
@@ -178,7 +176,7 @@
             </div>
             <div class="stage-item" id="stage5">
               <div class="stage-dot">5</div>
-              <div class="stage-label">AI JET Heatmap Overlay</div>
+              <div class="stage-label">AI Bounding Box Detection</div>
             </div>
             <div class="stage-item" id="stage6">
               <div class="stage-dot">6</div>
@@ -204,7 +202,7 @@
             <div class="viewer-mode-toggles">
               <button type="button" class="view-mode-btn active" id="modeSplit" onclick="setViewMode('split')">Split Slider</button>
               <button type="button" class="view-mode-btn" id="modeSide" onclick="setViewMode('side')">Side-by-Side</button>
-              <button type="button" class="view-mode-btn" id="modeHeatmap" onclick="setViewMode('heatmap')">Heatmap</button>
+              <button type="button" class="view-mode-btn" id="modeHeatmap" onclick="setViewMode('heatmap')">Bounding Box</button>
               <button type="button" class="view-mode-btn" id="modeOriginal" onclick="setViewMode('original')">Raw X-Ray</button>
             </div>
 
@@ -234,8 +232,8 @@
               </div>
               
               <div class="img-layer layer-heatmap" id="heatmapLayer">
-                <img id="imgHeatmapSplit" src="" alt="AI JET Heatmap Overlay" />
-                <div class="viewport-label right">AI JET Heatmap + HUD</div>
+                <img id="imgHeatmapSplit" src="" alt="AI Bounding Box Overlay" />
+                <div class="viewport-label right">AI Bounding Box + HUD</div>
               </div>
               
               <!-- Draggable Divider Handle -->
@@ -251,8 +249,8 @@
                 <div class="viewport-label left">Raw Radiograph</div>
               </div>
               <div class="side-pane">
-                <img id="imgHeatmapSide" src="" alt="AI JET Heatmap Overlay" />
-                <div class="viewport-label right">AI Heatmap + HUD</div>
+                <img id="imgHeatmapSide" src="" alt="AI Bounding Box Overlay" />
+                <div class="viewport-label right">AI Bounding Box + HUD</div>
               </div>
             </div>
 

@@ -268,5 +268,500 @@
     "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
     "recipient": "Pediatric Craniofacial Surgical On-Call",
     "message": "\ud83d\udea8 URGENT CLINICAL ALERT: CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-7ed5b59966. Bone Density Index: 0.4737 (Confidence: 78.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-a9de6295c7",
+    "timestamp": "2026-09-11T05:10:19.657267+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.2655,
+    "confidence_score": 1.0,
+    "anomaly_region": {
+      "x": 264,
+      "y": 359,
+      "width": 113,
+      "height": 77
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-a9de6295c7. Bone Density Index: 0.2655 (Confidence: 100.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-0386aa3a70",
+    "timestamp": "2026-09-11T05:12:06.147760+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.4737,
+    "confidence_score": 0.78,
+    "anomaly_region": {
+      "x": 223,
+      "y": 242,
+      "width": 50,
+      "height": 34
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-0386aa3a70. Bone Density Index: 0.4737 (Confidence: 78.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-3f4bee5c56",
+    "timestamp": "2026-09-11T05:12:44.612120+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.4737,
+    "confidence_score": 0.78,
+    "anomaly_region": {
+      "x": 223,
+      "y": 242,
+      "width": 50,
+      "height": 34
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-3f4bee5c56. Bone Density Index: 0.4737 (Confidence: 78.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-27b2d17057",
+    "timestamp": "2026-09-11T05:33:02.427722+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3827,
+    "confidence_score": 0.77,
+    "anomaly_region": {
+      "x": 1255,
+      "y": 895,
+      "width": 15,
+      "height": 6
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-27b2d17057. Bone Density Index: 0.3827 (Confidence: 77.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-7dbc634067",
+    "timestamp": "2026-09-11T05:33:24.191949+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.4737,
+    "confidence_score": 0.78,
+    "anomaly_region": {
+      "x": 223,
+      "y": 242,
+      "width": 50,
+      "height": 34
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-7dbc634067. Bone Density Index: 0.4737 (Confidence: 78.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-30e5bf3aa5",
+    "timestamp": "2026-09-11T05:33:36.523362+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3568,
+    "confidence_score": 0.83,
+    "anomaly_region": {
+      "x": 308,
+      "y": 213,
+      "width": 29,
+      "height": 82
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-30e5bf3aa5. Bone Density Index: 0.3568 (Confidence: 83.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-51a1c0879b",
+    "timestamp": "2026-09-11T05:33:46.890387+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3302,
+    "confidence_score": 0.84,
+    "anomaly_region": {
+      "x": 364,
+      "y": 342,
+      "width": 31,
+      "height": 71
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-51a1c0879b. Bone Density Index: 0.3302 (Confidence: 84.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-118104ff02",
+    "timestamp": "2026-09-11T05:34:24.442555+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3704,
+    "confidence_score": 0.89,
+    "anomaly_region": {
+      "x": 326,
+      "y": 266,
+      "width": 99,
+      "height": 66
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-118104ff02. Bone Density Index: 0.3704 (Confidence: 89.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-75b4780757",
+    "timestamp": "2026-09-11T05:34:55.780861+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3704,
+    "confidence_score": 0.89,
+    "anomaly_region": {
+      "x": 326,
+      "y": 266,
+      "width": 99,
+      "height": 66
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-75b4780757. Bone Density Index: 0.3704 (Confidence: 89.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-53a04cdd5d",
+    "timestamp": "2026-09-11T05:34:59.824339+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3704,
+    "confidence_score": 0.89,
+    "anomaly_region": {
+      "x": 326,
+      "y": 266,
+      "width": 99,
+      "height": 66
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-53a04cdd5d. Bone Density Index: 0.3704 (Confidence: 89.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-66bc295d73",
+    "timestamp": "2026-09-11T05:49:43.473211+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3704,
+    "confidence_score": 0.89,
+    "anomaly_region": {
+      "x": 326,
+      "y": 266,
+      "width": 99,
+      "height": 66
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-66bc295d73. Bone Density Index: 0.3704 (Confidence: 89.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-83afaf685c",
+    "timestamp": "2026-09-11T05:50:26.348764+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3827,
+    "confidence_score": 0.77,
+    "anomaly_region": {
+      "x": 1255,
+      "y": 895,
+      "width": 15,
+      "height": 6
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-83afaf685c. Bone Density Index: 0.3827 (Confidence: 77.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-e5efc69293",
+    "timestamp": "2026-09-11T06:00:04.825285+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.2631,
+    "confidence_score": 0.92,
+    "anomaly_region": {
+      "x": 203,
+      "y": 175,
+      "width": 51,
+      "height": 57
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-e5efc69293. Bone Density Index: 0.2631 (Confidence: 92.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-eda3f0aed9",
+    "timestamp": "2026-09-11T06:02:02.783106+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3302,
+    "confidence_score": 0.84,
+    "anomaly_region": {
+      "x": 364,
+      "y": 342,
+      "width": 31,
+      "height": 71
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-eda3f0aed9. Bone Density Index: 0.3302 (Confidence: 84.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-81311ec335",
+    "timestamp": "2026-09-11T06:02:24.979792+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.459,
+    "confidence_score": 0.72,
+    "anomaly_region": {
+      "x": 392,
+      "y": 256,
+      "width": 15,
+      "height": 46
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-81311ec335. Bone Density Index: 0.4590 (Confidence: 72.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-3791b83878",
+    "timestamp": "2026-09-11T06:06:09.885876+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.2631,
+    "confidence_score": 0.92,
+    "anomaly_region": {
+      "x": 203,
+      "y": 175,
+      "width": 51,
+      "height": 57
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-3791b83878. Bone Density Index: 0.2631 (Confidence: 92.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-9bd1dc5141",
+    "timestamp": "2026-09-11T06:07:17.295444+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3302,
+    "confidence_score": 0.84,
+    "anomaly_region": {
+      "x": 364,
+      "y": 342,
+      "width": 31,
+      "height": 71
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-9bd1dc5141. Bone Density Index: 0.3302 (Confidence: 84.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-23e12f5a",
+    "status": "REVIEW",
+    "confidence_score": 0.91,
+    "bone_density_index": 0.418,
+    "anomaly_bounding_box": {
+      "x": 192,
+      "y": 120,
+      "width": 256,
+      "height": 96
+    },
+    "timestamp": "2026-09-11T06:20:13.418401+00:00",
+    "dispatched_at": "2026-09-11T06:20:13.421583+00:00"
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-54065a4ee9",
+    "timestamp": "2026-09-11T06:21:36.867943+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.3568,
+    "confidence_score": 0.83,
+    "anomaly_region": {
+      "x": 308,
+      "y": 213,
+      "width": 29,
+      "height": 82
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-54065a4ee9. Bone Density Index: 0.3568 (Confidence: 83.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-13f4a921f8",
+    "timestamp": "2026-09-11T06:24:37.816134+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.5734,
+    "confidence_score": 0.79,
+    "anomaly_region": {
+      "x": 474,
+      "y": 503,
+      "width": 83,
+      "height": 111
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-13f4a921f8. Bone Density Index: 0.5734 (Confidence: 79.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-8602578b",
+    "status": "REVIEW",
+    "confidence_score": 0.91,
+    "bone_density_index": 0.418,
+    "anomaly_bounding_box": {
+      "x": 397,
+      "y": 61,
+      "width": 39,
+      "height": 25
+    },
+    "timestamp": "2026-09-11T06:33:00.568234+00:00",
+    "dispatched_at": "2026-09-11T06:33:00.586862+00:00"
+  },
+  {
+    "event": "URGENT_TRIAGE_ALERT",
+    "job_id": "cg-scan-543cd59f74",
+    "timestamp": "2026-09-11T06:34:48.843626+00:00",
+    "triage_status": "REVIEW",
+    "clinical_urgency": "HIGH",
+    "bone_density_index": 0.4737,
+    "confidence_score": 0.78,
+    "anomaly_region": {
+      "x": 223,
+      "y": 242,
+      "width": 50,
+      "height": 34
+    },
+    "dispatch_channel": "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
+    "recipient": "Pediatric Craniofacial Surgical On-Call",
+    "message": "[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #cg-scan-543cd59f74. Bone Density Index: 0.4737 (Confidence: 78.0%). Secondary surgical review recommended."
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-d85eeb62",
+    "status": "REVIEW",
+    "confidence_score": 0.91,
+    "bone_density_index": 0.418,
+    "anomaly_bounding_box": {
+      "x": 260,
+      "y": 14,
+      "width": 54,
+      "height": 21
+    },
+    "timestamp": "2026-09-11T10:01:35.850571+00:00",
+    "dispatched_at": "2026-09-11T10:01:35.858852+00:00"
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-0abfeb5e",
+    "status": "REVIEW",
+    "confidence_score": 0.94,
+    "bone_density_index": 0.28,
+    "anomaly_bounding_box": {
+      "x": 458,
+      "y": 53,
+      "width": 40,
+      "height": 64
+    },
+    "timestamp": "2026-09-11T10:55:41.925355+00:00",
+    "dispatched_at": "2026-09-11T10:55:41.938102+00:00"
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-9fed1e87",
+    "status": "REVIEW",
+    "confidence_score": 0.94,
+    "bone_density_index": 0.28,
+    "anomaly_bounding_box": {
+      "x": 458,
+      "y": 53,
+      "width": 40,
+      "height": 64
+    },
+    "timestamp": "2026-09-11T11:04:12.001359+00:00",
+    "dispatched_at": "2026-09-11T11:04:12.012215+00:00"
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-dfa7f666",
+    "status": "REVIEW",
+    "confidence_score": 0.94,
+    "bone_density_index": 0.28,
+    "anomaly_bounding_box": {
+      "x": 458,
+      "y": 53,
+      "width": 40,
+      "height": 64
+    },
+    "timestamp": "2026-09-11T11:04:20.832348+00:00",
+    "dispatched_at": "2026-09-11T11:04:20.838094+00:00"
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-91a8bc2e",
+    "status": "REVIEW",
+    "confidence_score": 0.94,
+    "bone_density_index": 0.28,
+    "anomaly_bounding_box": {
+      "x": 458,
+      "y": 53,
+      "width": 40,
+      "height": 64
+    },
+    "timestamp": "2026-09-11T12:16:29.941589+00:00",
+    "dispatched_at": "2026-09-11T12:16:29.951911+00:00"
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-163c73e6",
+    "status": "REVIEW",
+    "confidence_score": 0.91,
+    "bone_density_index": 0.418,
+    "anomaly_bounding_box": {
+      "x": 260,
+      "y": 14,
+      "width": 54,
+      "height": 21
+    },
+    "timestamp": "2026-09-11T13:08:57.952852+00:00",
+    "dispatched_at": "2026-09-11T13:08:57.975413+00:00"
+  },
+  {
+    "event": "URGENT_CLINICAL_REVIEW_REQUIRED",
+    "job_id": "cg-scan-e469fc9e",
+    "status": "REVIEW",
+    "confidence_score": 0.94,
+    "bone_density_index": 0.28,
+    "anomaly_bounding_box": {
+      "x": 458,
+      "y": 53,
+      "width": 40,
+      "height": 64
+    },
+    "timestamp": "2026-09-11T13:10:10.929165+00:00",
+    "dispatched_at": "2026-09-11T13:10:10.933682+00:00"
   }
 ]

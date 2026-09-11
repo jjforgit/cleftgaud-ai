@@ -54,7 +54,7 @@ def dispatch_urgent_review_webhook(
         "dispatch_channel": channel,
         "recipient": recipient_role,
         "message": (
-            f"🚨 URGENT CLINICAL ALERT: CleftGuard AI detected potential alveolar bone graft "
+            f"[URGENT CLINICAL ALERT] CleftGuard AI detected potential alveolar bone graft "
             f"resorption on Scan ID #{job_id}. Bone Density Index: {bone_density_index:.4f} "
             f"(Confidence: {confidence_score*100:.1f}%). Secondary surgical review recommended."
         ),
@@ -64,7 +64,7 @@ def dispatch_urgent_review_webhook(
     border = "=" * 78
     formatted_json = json.dumps(payload, indent=2)
     print(f"\n\033[91m\033[1m{border}")
-    print(f"🚨 [URGENT WEBHOOK DISPATCHED] -> {channel}")
+    print(f"[URGENT WEBHOOK DISPATCHED] -> {channel}")
     print(f"To: {recipient_role} | Scan ID: {job_id}")
     print(border)
     print(f"\033[93m{formatted_json}\033[0m")
