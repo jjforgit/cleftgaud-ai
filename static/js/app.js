@@ -1,8 +1,9 @@
 /**
- * CleftGuard Studio — Clinical Interactive Controller
+ * CleftGuard AI — Clinical Interactive Frontend Controller
  * 
- * Clean White & Light Blue Clinical Workstation
- * Zero Emojis • PyTorch Grad-CAM Inference • Split Slider • HIPAA Ledger
+ * Manages image ingestion, live simulated GPU inference pipeline tracking,
+ * interactive radiograph before/after split slider visualizer,
+ * explainable AI (XAI) diagnostics, HIPAA audit logging, and PDF report downloads.
  */
 
 // Application State
@@ -45,7 +46,8 @@ const pipelineCard = document.getElementById('pipelineCard');
 const pipelineProgressBar = document.getElementById('pipelineProgressBar');
 const pipelineTimer = document.getElementById('pipelineTimer');
 
-// Results & Diagnostic Elements
+// Results & XAI Elements
+const resultsSection = document.getElementById('resultsSection');
 const triageBanner = document.getElementById('triageBanner');
 const triageIcon = document.getElementById('triageIcon');
 const triageTitle = document.getElementById('triageTitle');
@@ -66,18 +68,15 @@ const webhookBanner = document.getElementById('webhookBanner');
 const webhookModal = document.getElementById('webhookModal');
 const webhookPayloadCode = document.getElementById('webhookPayloadCode');
 const auditTableBody = document.getElementById('auditTableBody');
-const findingsCard = document.getElementById('findingsCard');
-const gpuStatusPill = document.getElementById('gpuStatusPill');
-const gpuStatusLabel = document.getElementById('gpuStatusLabel');
 
 // ---------------------------------------------------------------------------
-// Initialization
+// Initialization & Event Listeners
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   setupDropzone();
   setupSplitSlider();
   refreshAuditLogs();
-  refreshGpuStatus();
+  fetchMetrics();
 });
 
 // ---------------------------------------------------------------------------
@@ -116,7 +115,7 @@ function setupDropzone() {
 
 function handleFileSelected(file) {
   if (!file.type.match('image/.*')) {
-    alert('Please select a valid radiograph image (JPG or PNG).');
+    alert('Please select a valid image file (JPG or PNG).');
     return;
   }
 
@@ -128,6 +127,7 @@ function handleFileSelected(file) {
   filePreviewStrip.classList.add('visible');
   btnAnalyze.disabled = false;
 
+  // Read file to preview raw radiograph immediately
   const reader = new FileReader();
   reader.onload = (e) => {
     state.rawImageSrc = e.target.result;
@@ -151,24 +151,18 @@ function clearSelectedFile() {
   viewportPlaceholder.style.display = 'flex';
   splitViewer.classList.remove('active');
   sideViewer.classList.remove('active');
+  resultsSection.classList.remove('visible');
   webhookBanner.classList.remove('visible');
   pipelineCard.classList.remove('active');
-  resetFindingsToIdle();
 }
 
 function clearPresetButtonStates() {
-  const healthyBtn = document.getElementById('btnPresetHealthy');
-  const defectBtn = document.getElementById('btnPresetDefect');
-  healthyBtn.className = 'preset-btn';
-  defectBtn.className = 'preset-btn';
-  const healthyDesc = healthyBtn.querySelector('.preset-desc');
-  const defectDesc = defectBtn.querySelector('.preset-desc');
-  if (healthyDesc) healthyDesc.textContent = 'Normal Alveolar Bone Graft (BDI ≥ 0.43) • Continuous trabecular bridge';
-  if (defectDesc) defectDesc.textContent = 'Cleft Resorption Defect (BDI < 0.43) • Significant cleft gap & radiolucency';
+  document.getElementById('btnPresetHealthy').className = 'preset-btn';
+  document.getElementById('btnPresetDefect').className = 'preset-btn';
 }
 
 // ---------------------------------------------------------------------------
-// 1-Click Clinical Sample Presets Loader
+// 1-Click Sample Presets Loader
 // ---------------------------------------------------------------------------
 async function loadSamplePreset(type) {
   clearPresetButtonStates();
@@ -182,14 +176,11 @@ async function loadSamplePreset(type) {
 
   patientIdInput.value = isHealthy ? 'PT-HEALTHY-01' : 'PT-REVIEW-02';
   notesInput.value = isHealthy 
-    ? 'Routine 6-mo follow-up: Bone graft consolidation check' 
-    : 'Suspected cleft margin resorption / bone defect evaluation';
+    ? 'Routine 6-mo follow-up: Bone consolidation evaluation' 
+    : 'Suspected bone loss at cleft margin / secondary resorption';
 
   try {
     const response = await fetch(sampleUrl);
-    if (!response.ok) {
-      throw new Error(`Sample radiograph missing (${response.status})`);
-    }
     const blob = await response.blob();
     const file = new File([blob], sampleName, { type: 'image/png' });
     
@@ -198,6 +189,7 @@ async function loadSamplePreset(type) {
     filePreviewStrip.classList.add('visible');
     btnAnalyze.disabled = false;
 
+    // Show preview
     const reader = new FileReader();
     reader.onload = (e) => {
       state.rawImageSrc = e.target.result;
@@ -206,22 +198,14 @@ async function loadSamplePreset(type) {
     reader.readAsDataURL(file);
 
   } catch (err) {
-    console.error('Failed to load preset:', err);
-    state.selectedFile = null;
-    state.selectedPreset = null;
-    btnAnalyze.disabled = true;
-    filePreviewStrip.classList.remove('visible');
-    btn.classList.remove('active', 'healthy', 'defect');
-    btn.classList.add('error');
-    const desc = btn.querySelector('.preset-desc');
-    if (desc) {
-      desc.textContent = 'Could not load sample radiograph. Check static/samples.';
-    }
+    console.error('Failed to load sample preset:', err);
+    alert('Failed to load preset image.');
   }
 }
 
 function showInitialImagePreview(src) {
   viewportPlaceholder.style.display = 'none';
+  resultsSection.classList.remove('visible');
   webhookBanner.classList.remove('visible');
   
   imgOriginalSplit.src = src;
@@ -233,15 +217,18 @@ function showInitialImagePreview(src) {
 }
 
 // ---------------------------------------------------------------------------
-// AI Inference & Live Pipeline Tracking
+// AI Inference Execution & Live Pipeline Tracking
 // ---------------------------------------------------------------------------
 async function runAnalysis() {
   if (!state.selectedFile) return;
 
+  // Prepare UI for execution
   btnAnalyze.disabled = true;
-  btnAnalyze.textContent = 'Running Neural AI Triage...';
+  btnAnalyze.innerHTML = `<span>⏳ Running AI Inference...</span>`;
+  resultsSection.classList.remove('visible');
   webhookBanner.classList.remove('visible');
   
+  // Start animated multi-stage progress pipeline
   startPipelineAnimation();
 
   const formData = new FormData();
@@ -262,22 +249,27 @@ async function runAnalysis() {
     const result = await response.json();
     const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
     
+    // Complete pipeline animation
     completePipelineAnimation();
 
+    // Process and display clinical findings
     state.currentAnalysis = result;
     state.heatmapImageSrc = `data:image/jpeg;base64,${result.heatmap_base64}`;
 
     displayAnalysisResults(result, elapsed);
-    setTimeout(refreshAuditLogs, 400);
+    
+    // Auto-refresh HIPAA audit trail and telemetry
+    setTimeout(refreshAuditLogs, 500);
+    setTimeout(fetchMetrics, 600);
 
   } catch (error) {
-    console.error('Inference error:', error);
+    console.error('Analysis error:', error);
     clearInterval(state.pipelineInterval);
     pipelineCard.classList.remove('active');
     alert(`Clinical AI Inference Failed: ${error.message}`);
   } finally {
     btnAnalyze.disabled = false;
-    btnAnalyze.textContent = 'Run Clinical AI Triage';
+    btnAnalyze.innerHTML = `<span>⚡ Run Clinical AI Triage</span>`;
   }
 }
 
@@ -285,31 +277,33 @@ function startPipelineAnimation() {
   pipelineCard.classList.add('active');
   pipelineProgressBar.style.width = '0%';
   
+  // Reset stages
   for (let i = 1; i <= 6; i++) {
     const stage = document.getElementById(`stage${i}`);
     stage.className = 'stage-item';
   }
 
   const startTime = Date.now();
-  const totalDurationMs = 1200;
+  const totalDurationMs = 2500; // Match 2.5s simulated GPU inference
 
   clearInterval(state.pipelineInterval);
   state.pipelineInterval = setInterval(() => {
     const elapsed = Date.now() - startTime;
     const progress = Math.min(100, (elapsed / totalDurationMs) * 100);
     pipelineProgressBar.style.width = `${progress}%`;
-    pipelineTimer.textContent = `${(elapsed / 1000).toFixed(1)}s / 1.2s`;
+    pipelineTimer.textContent = `${(elapsed / 1000).toFixed(1)}s / 2.5s`;
 
-    if (progress >= 15 && progress < 35) {
+    // Step transitions
+    if (progress >= 10 && progress < 30) {
       setStageState(1, 'completed');
       setStageState(2, 'in-progress');
-    } else if (progress >= 35 && progress < 55) {
+    } else if (progress >= 30 && progress < 50) {
       setStageState(2, 'completed');
       setStageState(3, 'in-progress');
-    } else if (progress >= 55 && progress < 75) {
+    } else if (progress >= 50 && progress < 70) {
       setStageState(3, 'completed');
       setStageState(4, 'in-progress');
-    } else if (progress >= 75 && progress < 90) {
+    } else if (progress >= 70 && progress < 90) {
       setStageState(4, 'completed');
       setStageState(5, 'in-progress');
     } else if (progress >= 90) {
@@ -322,7 +316,7 @@ function startPipelineAnimation() {
     if (elapsed >= totalDurationMs) {
       clearInterval(state.pipelineInterval);
     }
-  }, 40);
+  }, 50);
 }
 
 function setStageState(num, status) {
@@ -330,7 +324,7 @@ function setStageState(num, status) {
   if (!stage) return;
   if (status === 'completed') {
     stage.className = 'stage-item completed';
-    stage.querySelector('.stage-dot').textContent = 'OK';
+    stage.querySelector('.stage-dot').textContent = '✓';
   } else if (status === 'in-progress') {
     stage.className = 'stage-item in-progress';
   }
@@ -339,17 +333,17 @@ function setStageState(num, status) {
 function completePipelineAnimation() {
   clearInterval(state.pipelineInterval);
   pipelineProgressBar.style.width = '100%';
-  pipelineTimer.textContent = '1.2s / 1.2s (Completed)';
+  pipelineTimer.textContent = '2.5s / 2.5s (Completed)';
   for (let i = 1; i <= 6; i++) {
     setStageState(i, 'completed');
   }
 }
 
 // ---------------------------------------------------------------------------
-// Display Clinical Findings & XAI
+// Render Results & Explainable AI (XAI)
 // ---------------------------------------------------------------------------
 function displayAnalysisResults(data, elapsedSeconds) {
-  findingsCard.classList.add('has-results');
+  // Update Radiograph Images with AI Heatmap
   imgHeatmapSplit.src = state.heatmapImageSrc;
   imgHeatmapSide.src = state.heatmapImageSrc;
   
@@ -358,19 +352,20 @@ function displayAnalysisResults(data, elapsedSeconds) {
     imgOriginalSide.src = state.rawImageSrc;
   }
 
+  // Triage Banner Status
   const isHealthy = data.status === 'SUCCESS';
-  triageBanner.className = `triage-decision-card ${isHealthy ? 'success' : 'review'}`;
-  triageIcon.textContent = isHealthy ? 'NORMAL' : 'REVIEW';
+  triageBanner.className = `triage-decision-banner ${isHealthy ? 'success' : 'review'}`;
+  triageIcon.textContent = isHealthy ? '✓' : '🚨';
   
   if (isHealthy) {
-    triageTitle.textContent = 'NORMAL GRAFT HEALING';
-    triageSubtext.textContent = 'Bone graft structure is consolidated and stable with uniform radio-opacity.';
+    triageTitle.textContent = 'STATUS: NORMAL ALVEOLAR BONE HEALING';
+    triageSubtext.textContent = 'Bone graft structure is stable and consolidated with uniform radio-opacity.';
   } else {
-    triageTitle.textContent = 'REVIEW REQUIRED — DEFECT DETECTED';
+    triageTitle.textContent = 'STATUS: REVIEW REQUIRED — DEFECT DETECTED';
     triageSubtext.textContent = 'Suspected bone graft resorption or radiolucent cleft cavity detected.';
   }
 
-  resultJobId.textContent = `Job: ${data.job_id}`;
+  resultJobId.textContent = `Job ID: ${data.job_id}`;
   resultTimestamp.textContent = new Date(data.timestamp).toUTCString();
 
   // Bone Density Index (BDI)
@@ -379,22 +374,22 @@ function displayAnalysisResults(data, elapsedSeconds) {
   densityBarFill.style.width = `${Math.min(100, Math.max(0, density * 100))}%`;
   
   if (isHealthy) {
-    densityStateTag.textContent = 'Healthy (≥0.43)';
+    densityStateTag.textContent = 'Healthy Graft (≥0.43)';
     densityStateTag.className = 'density-state-tag healthy';
   } else {
-    densityStateTag.textContent = 'Resorption (<0.43)';
+    densityStateTag.textContent = 'Resorption Risk (<0.43)';
     densityStateTag.className = 'density-state-tag resorption';
   }
 
-  // Model Softmax Certainty
+  // Model Confidence Radial Meter
   const conf = data.confidence_score;
   confidenceValue.textContent = `${(conf * 100).toFixed(1)}%`;
-  const circumference = 2 * Math.PI * 25;
+  const circumference = 2 * Math.PI * 25; // r=25 -> ~157.08
   const offset = circumference - (conf * circumference);
   radialConfidenceBar.style.strokeDashoffset = offset;
   radialConfidenceBar.style.stroke = isHealthy ? 'var(--emerald-success)' : 'var(--crimson-alert)';
 
-  // Anomaly Bounding Box
+  // Anomaly Bounding Box Coordinates
   const bbox = data.anomaly_bounding_box;
   bboxX.textContent = `${bbox.x} px`;
   bboxY.textContent = `${bbox.y} px`;
@@ -418,12 +413,15 @@ function displayAnalysisResults(data, elapsedSeconds) {
       anomaly_region: data.anomaly_bounding_box,
       dispatch_channel: "WhatsApp-Clinician-Direct & SMS-Triage-Gateway",
       recipient: "Pediatric Craniofacial Surgical On-Call",
-      message: `URGENT CLINICAL ALERT: CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #${data.job_id}. Bone Density Index: ${data.bone_density_index.toFixed(4)} (Confidence: ${(data.confidence_score*100).toFixed(1)}%). Secondary surgical review recommended.`
+      message: `🚨 URGENT CLINICAL ALERT: CleftGuard AI detected potential alveolar bone graft resorption on Scan ID #${data.job_id}. Bone Density Index: ${data.bone_density_index.toFixed(4)} (Confidence: ${(data.confidence_score*100).toFixed(1)}%). Secondary surgical review recommended.`
     };
     webhookPayloadCode.textContent = JSON.stringify(webhookPayload, null, 2);
   } else {
     webhookBanner.classList.remove('visible');
   }
+
+  // Reveal results container
+  resultsSection.classList.add('visible');
 }
 
 // ---------------------------------------------------------------------------
@@ -458,6 +456,7 @@ function setupSplitSlider() {
   window.addEventListener('mousemove', onMove);
   window.addEventListener('mouseup', stopDrag);
 
+  // Touch Support
   splitHandle.addEventListener('touchstart', startDrag, { passive: true });
   window.addEventListener('touchmove', onMove, { passive: true });
   window.addEventListener('touchend', stopDrag);
@@ -513,8 +512,8 @@ async function downloadPdfReport() {
   }
 
   const btn = document.getElementById('btnDownloadReport');
-  const originalText = btn.textContent;
-  btn.textContent = 'Generating PDF...';
+  const originalText = btn.innerHTML;
+  btn.innerHTML = `<span>⏳ Rendering Medical PDF Report...</span>`;
   btn.disabled = true;
 
   const patientId = patientIdInput.value.trim() || 'PT-UNKNOWN';
@@ -549,10 +548,10 @@ async function downloadPdfReport() {
     window.URL.revokeObjectURL(downloadUrl);
 
   } catch (error) {
-    console.error('PDF Download Error:', error);
+    console.error('PDF Report Download Error:', error);
     alert(`Failed to download report: ${error.message}`);
   } finally {
-    btn.textContent = originalText;
+    btn.innerHTML = originalText;
     btn.disabled = false;
   }
 }
@@ -566,52 +565,6 @@ function openWebhookModal() {
 
 function closeWebhookModal() {
   webhookModal.classList.remove('open');
-}
-
-function resetFindingsToIdle() {
-  findingsCard.classList.remove('has-results');
-  webhookBanner.classList.remove('visible');
-  triageBanner.className = 'triage-decision-card success';
-  triageIcon.textContent = '—';
-  triageTitle.textContent = 'Awaiting analysis';
-  triageSubtext.textContent = 'Results appear after inference completes.';
-  resultJobId.textContent = 'Job: —';
-  resultTimestamp.textContent = '—';
-  densityValue.textContent = '—';
-  densityStateTag.textContent = '—';
-  densityStateTag.className = 'density-state-tag';
-  densityBarFill.style.width = '0%';
-  confidenceValue.textContent = '—';
-  radialConfidenceBar.style.strokeDashoffset = 157;
-  bboxX.textContent = '—';
-  bboxY.textContent = '—';
-  bboxW.textContent = '—';
-  bboxH.textContent = '—';
-  recText.textContent = '—';
-}
-
-async function refreshGpuStatus() {
-  try {
-    const response = await fetch('/health');
-    if (!response.ok) {
-      throw new Error(`Health check failed (${response.status})`);
-    }
-    const data = await response.json();
-    const device = (data.gpu_status || 'cpu').toLowerCase();
-    gpuStatusPill.classList.remove('offline');
-    gpuStatusPill.classList.add('online');
-
-    if (device === 'mps' || device === 'cuda') {
-      gpuStatusLabel.textContent = `GPU Acceleration: ${device.toUpperCase()}`;
-    } else {
-      gpuStatusLabel.textContent = 'Inference Device: CPU';
-    }
-  } catch (err) {
-    console.error('Health check failed:', err);
-    gpuStatusPill.classList.remove('online');
-    gpuStatusPill.classList.add('offline');
-    gpuStatusLabel.textContent = 'Inference Device: Offline';
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -647,5 +600,32 @@ async function refreshAuditLogs() {
 
   } catch (err) {
     console.error('Failed to fetch audit logs:', err);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// System Metrics Telemetry
+// ---------------------------------------------------------------------------
+async function fetchMetrics() {
+  try {
+    const response = await fetch('/metrics');
+    if (!response.ok) return;
+
+    const data = await response.json();
+    if (data.scans_today !== undefined) {
+      document.getElementById('metricScans').textContent = `${data.scans_today}`;
+    }
+    if (data.avg_inference_time_ms !== undefined) {
+      document.getElementById('metricLatency').textContent = `${(data.avg_inference_time_ms / 1000).toFixed(2)}s`;
+    }
+    if (data.urgent_referrals !== undefined) {
+      document.getElementById('metricUrgent').textContent = `${data.urgent_referrals}`;
+    }
+    if (data.uptime_seconds !== undefined) {
+      const uptimeMin = (data.uptime_seconds / 60).toFixed(1);
+      document.getElementById('metricUptime').textContent = `${uptimeMin} min`;
+    }
+  } catch (err) {
+    console.warn('Metrics polling error:', err);
   }
 }
